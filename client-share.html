@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>House of Many Verandahs — A page from Karkhana Architects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f2ec;
+    --bg-2: #ede9df;
+    --card: #ffffff;
+    --border: #e6e1d6;
+    --border-strong: #d5cebc;
+    --text: #1c1a17;
+    --text-2: #6b665d;
+    --text-3: #9a9388;
+    --accent: #b8542e;
+    --accent-2: #2d3e36;
+    --success: #4a6741;
+    --warning: #c08b2f;
+    --info: #3a5e7a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .serif { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.04em; }
+
+  /* Container */
+  .wrap { max-width: 960px; margin: 0 auto; padding: 32px 32px 80px; }
+
+  /* Top bar — studio mark */
+  .studio-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .mark {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mark-glyph {
+    width: 40px; height: 40px;
+    background: var(--text);
+    color: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+  }
+  .mark-name { font-size: 14px; font-weight: 500; }
+  .mark-sub { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .updated { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* Hero */
+  .hero {
+    padding: 24px 0 56px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 64px;
+  }
+  .prep-for { font-size: 12px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px; }
+  .hero-title { font-size: 56px; line-height: 1; letter-spacing: -0.02em; margin-bottom: 16px; }
+  .hero-tagline { font-size: 20px; line-height: 1.4; color: var(--text-2); max-width: 600px; font-family: 'DM Serif Display', serif; font-style: italic; }
+  .hero-meta {
+    display: flex;
+    gap: 40px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  .hero-meta-item .label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .hero-meta-item .value { font-size: 16px; margin-top: 4px; }
+
+  /* Hero image */
+  .hero-image {
+    aspect-ratio: 16/8;
+    margin: 32px 0 8px;
+    background: linear-gradient(135deg, #2d3e36 0%, #4a6258 50%, #6e8478 100%);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 36px, rgba(255,255,255,0.04) 36px, rgba(255,255,255,0.04) 37px),
+      repeating-linear-gradient(90deg, transparent, transparent 36px, rgba(255,255,255,0.04) 36px, rgba(255,255,255,0.04) 37px);
+  }
+  .hero-caption {
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* Section */
+  .section { margin-bottom: 72px; }
+  .section-num { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 20px; color: var(--text-3); margin-bottom: 4px; }
+  .section-title { font-size: 32px; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .section-intro { color: var(--text-2); font-size: 15px; max-width: 580px; margin-bottom: 28px; line-height: 1.65; }
+
+  /* Pipeline — where we've sent your project */
+  .pipeline {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .pipeline-row {
+    display: grid;
+    grid-template-columns: 32px 1fr 1.5fr 130px;
+    gap: 20px;
+    padding: 18px 24px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .pipeline-row:last-child { border-bottom: 0; }
+  .pipeline-status {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--border-strong);
+    position: relative;
+  }
+  .pipeline-status.won { background: var(--success); border-color: var(--success); }
+  .pipeline-status.under { background: var(--warning); border-color: var(--warning); }
+  .pipeline-status.under::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid var(--warning);
+    opacity: 0.25;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 50% { transform: scale(1.4); opacity: 0; } }
+  .pipeline-status.submitted { background: var(--info); border-color: var(--info); }
+  .pipeline-status.drafting { background: transparent; }
+
+  .pipeline-outlet { font-size: 15px; font-weight: 500; }
+  .pipeline-type { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 3px; }
+  .pipeline-note { font-size: 13px; color: var(--text-2); }
+  .pipeline-date { font-size: 12px; color: var(--text-2); text-align: right; }
+  .pipeline-date.bold { color: var(--text); font-weight: 500; }
+
+  /* Wins — feature cards */
+  .wins-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .win-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .win-cover {
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #4a6258 0%, #2d3e36 100%);
+    position: relative;
+  }
+  .win-cover.b { background: linear-gradient(135deg, #c08b2f 0%, #8a6a3c 100%); }
+  .win-cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(255,255,255,0.05) 28px, rgba(255,255,255,0.05) 29px);
+  }
+  .win-body { padding: 20px 22px 24px; }
+  .win-outlet { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .win-title { font-size: 22px; line-height: 1.2; margin: 6px 0 10px; letter-spacing: -0.01em; }
+  .win-desc { font-size: 13px; color: var(--text-2); line-height: 1.55; }
+  .win-link { display: inline-block; margin-top: 14px; font-size: 13px; color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent); padding-bottom: 1px; }
+
+  /* Social block */
+  .social-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .social-tile {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .social-image {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #4a6258 0%, #2d3e36 100%);
+    position: relative;
+  }
+  .social-image.t2 { background: linear-gradient(135deg, #8a6a3c 0%, #b8854a 100%); }
+  .social-image.t3 { background: linear-gradient(135deg, #5a6371 0%, #8a929c 100%); }
+  .social-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 18px, rgba(255,255,255,0.04) 18px, rgba(255,255,255,0.04) 19px);
+  }
+  .social-body { padding: 14px 16px 16px; }
+  .social-channel { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .social-cap { font-size: 12px; color: var(--text-2); margin-top: 6px; line-height: 1.5; }
+  .social-stats { display: flex; gap: 14px; margin-top: 10px; font-size: 11px; color: var(--text-3); }
+  .social-stats b { color: var(--text); font-weight: 600; }
+
+  /* Numbers panel */
+  .numbers {
+    background: var(--text);
+    color: var(--bg);
+    border-radius: 12px;
+    padding: 32px 36px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .num-label { font-size: 11px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.06em; }
+  .num-value { font-size: 36px; line-height: 1; margin-top: 8px; font-family: 'DM Serif Display', serif; }
+  .num-sub { font-size: 11px; opacity: 0.6; margin-top: 4px; }
+
+  /* What's next */
+  .next-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+  }
+  .next-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+  .next-item:last-child { border-bottom: 0; }
+  .next-text { font-size: 14px; line-height: 1.55; }
+  .next-when { font-size: 12px; color: var(--text-3); white-space: nowrap; }
+
+  /* Signature */
+  .sig {
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .sig-body { max-width: 480px; }
+  .sig-note {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--text-2);
+    margin-bottom: 16px;
+  }
+  .sig-from { font-size: 13px; }
+  .sig-from b { font-weight: 500; }
+  .sig-buttons { display: flex; gap: 10px; }
+  .btn {
+    background: var(--text);
+    color: var(--bg);
+    border: 0;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border-strong); }
+
+  /* Footer */
+  .footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-3);
+  }
+  .footer a { color: var(--text-3); text-decoration: none; border-bottom: 1px solid var(--border-strong); }
+
+  @media (max-width: 800px) {
+    .hero-title { font-size: 40px; }
+    .wins-grid, .social-row, .numbers { grid-template-columns: 1fr 1fr; }
+    .pipeline-row { grid-template-columns: 20px 1fr; gap: 12px; }
+    .pipeline-row > div:nth-child(3), .pipeline-row > div:nth-child(4) { grid-column: 2; }
+  }
+  @media (max-width: 520px) {
+    .wins-grid, .social-row { grid-template-columns: 1fr; }
+    .numbers { grid-template-columns: 1fr 1fr; }
+    .hero-meta { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Studio bar -->
+  <div class="studio-bar">
+    <div class="mark">
+      <div class="mark-glyph">k.</div>
+      <div>
+        <div class="mark-name">Karkhana Architects</div>
+        <div class="mark-sub">Mumbai · est. 2019</div>
+      </div>
+    </div>
+    <div class="updated">Last updated 13 May 2026</div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="prep-for">Prepared for the Verma family</div>
+    <h1 class="hero-title serif">House of Many Verandahs</h1>
+    <p class="hero-tagline">A note on where your house has been seen, what's been said about it, and where it goes next.</p>
+
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="label">Project</div>
+        <div class="value">House of Many Verandahs</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="label">Location</div>
+        <div class="value">Siolim, Goa</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="label">Completed</div>
+        <div class="value">December 2024</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="label">Photography</div>
+        <div class="value">Niveditaa Gupta</div>
+      </div>
+    </div>
+
+    <div class="hero-image"></div>
+    <div class="hero-caption">View from the east verandah · photographed January 2025</div>
+  </div>
+
+  <!-- Pipeline -->
+  <div class="section">
+    <div class="section-num">01</div>
+    <h2 class="section-title serif">Where we've sent your project</h2>
+    <p class="section-intro">Since the photoshoot in January, we've submitted House of Many Verandahs to nine outlets — awards, magazines and editorial features. Here's where each one stands.</p>
+
+    <div class="pipeline">
+      <div class="pipeline-row">
+        <div class="pipeline-status won"></div>
+        <div>
+          <div class="pipeline-outlet">IndianArchitect&Builder</div>
+          <div class="pipeline-type">Publication · 8-page feature</div>
+        </div>
+        <div class="pipeline-note">Featured as the cover story in Volume 38, Issue 4. Print + online.</div>
+        <div class="pipeline-date bold">Apr 2026 · Published</div>
+      </div>
+      <div class="pipeline-row">
+        <div class="pipeline-status won"></div>
+        <div>
+          <div class="pipeline-outlet">WAF 2026 — House (Rural)</div>
+          <div class="pipeline-type">Award · World Architecture Festival</div>
+        </div>
+        <div class="pipeline-note">Longlisted. Shortlist announcement on 2 June 2026.</div>
+        <div class="pipeline-date bold">Longlisted</div>
+      </div>
+      <div class="pipeline-row">
+        <div class="pipeline-status under"></div>
+        <div>
+          <div class="pipeline-outlet">Dezeen Magazine</div>
+          <div class="pipeline-type">Publication · Editorial feature</div>
+        </div>
+        <div class="pipeline-note">Editor has responded; awaiting their schedule for the feature.</div>
+        <div class="pipeline-date">Under review</div>
+      </div>
+      <div class="pipeline-row">
+        <div class="pipeline-status submitted"></div>
+        <div>
+          <div class="pipeline-outlet">ArchDaily Building of the Year</div>
+          <div class="pipeline-type">Award · Public vote</div>
+        </div>
+        <div class="pipeline-note">Submitted 18 April. Voting opens in November 2026.</div>
+        <div class="pipeline-date">Submitted</div>
+      </div>
+      <div class="pipeline-row">
+        <div class="pipeline-status drafting"></div>
+        <div>
+          <div class="pipeline-outlet">Stir World</div>
+          <div class="pipeline-type">Publication · Material Stories series</div>
+        </div>
+        <div class="pipeline-note">Drafting an editorial pitch focused on laterite construction.</div>
+        <div class="pipeline-date">In progress</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wins -->
+  <div class="section">
+    <div class="section-num">02</div>
+    <h2 class="section-title serif">What's been said so far</h2>
+    <p class="section-intro">Two pieces of coverage are already out. We've kept the original print copies in our office — happy to send you scans or arrange a viewing.</p>
+
+    <div class="wins-grid">
+      <div class="win-card">
+        <div class="win-cover"></div>
+        <div class="win-body">
+          <div class="win-outlet">IndianArchitect&Builder · Apr 2026</div>
+          <div class="win-title serif">"A house that lets you forget the door"</div>
+          <div class="win-desc">An eight-page cover feature with photographs of all four verandahs, a long-form essay by editor Rohan Shivkumar, and a conversation with the Verma family about returning to Goa.</div>
+          <a class="win-link">Read the feature →</a>
+        </div>
+      </div>
+      <div class="win-card">
+        <div class="win-cover b"></div>
+        <div class="win-body">
+          <div class="win-outlet">WAF 2026 · Longlist</div>
+          <div class="win-title serif">House (Rural) — Longlisted</div>
+          <div class="win-desc">One of 24 houses longlisted across South Asia for the World Architecture Festival's rural house category. Shortlist of 8 announced 2 June; winners in November in Singapore.</div>
+          <a class="win-link">View longlist →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Numbers -->
+  <div class="section">
+    <div class="section-num">03</div>
+    <h2 class="section-title serif">Reach</h2>
+    <p class="section-intro">A rough sense of how many people have seen your project in the last 90 days, across every channel where we've shown it.</p>
+
+    <div class="numbers">
+      <div>
+        <div class="num-label">Print circulation</div>
+        <div class="num-value">42,000</div>
+        <div class="num-sub">IndianArch print run</div>
+      </div>
+      <div>
+        <div class="num-label">Online article views</div>
+        <div class="num-value">18,400</div>
+        <div class="num-sub">IndianArch online · 90 days</div>
+      </div>
+      <div>
+        <div class="num-label">Social impressions</div>
+        <div class="num-value">12,200</div>
+        <div class="num-sub">Instagram + LinkedIn combined</div>
+      </div>
+      <div>
+        <div class="num-label">Saved by</div>
+        <div class="num-value">847</div>
+        <div class="num-sub">Across IG and Pinterest</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social -->
+  <div class="section">
+    <div class="section-num">04</div>
+    <h2 class="section-title serif">On social</h2>
+    <p class="section-intro">Three posts so far, with one more queued for tomorrow evening. We always credit Niveditaa for the photography.</p>
+
+    <div class="social-row">
+      <div class="social-tile">
+        <div class="social-image"></div>
+        <div class="social-body">
+          <div class="social-channel">Instagram · 22 Apr</div>
+          <div class="social-cap">"Verandah no.2. The corner where the morning sun, the kitchen, and the dogs all meet."</div>
+          <div class="social-stats"><span><b>4,210</b> impressions</span><span><b>312</b> saves</span></div>
+        </div>
+      </div>
+      <div class="social-tile">
+        <div class="social-image t2"></div>
+        <div class="social-body">
+          <div class="social-channel">Instagram · 14 Apr</div>
+          <div class="social-cap">"A house built more in section than in plan." Reveal post with carousel.</div>
+          <div class="social-stats"><span><b>6,180</b> impressions</span><span><b>402</b> saves</span></div>
+        </div>
+      </div>
+      <div class="social-tile">
+        <div class="social-image t3"></div>
+        <div class="social-body">
+          <div class="social-channel">LinkedIn · 28 Apr</div>
+          <div class="social-cap">Process note on choosing laterite over coursed rubble for the spine wall.</div>
+          <div class="social-stats"><span><b>1,820</b> impressions</span><span><b>49</b> reactions</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- What's next -->
+  <div class="section">
+    <div class="section-num">05</div>
+    <h2 class="section-title serif">What's next</h2>
+    <p class="section-intro">A few things on our calendar for the next two months. We'll keep this page updated as decisions come in.</p>
+
+    <div class="next-block">
+      <div class="next-item">
+        <div class="next-text"><strong>WAF 2026 shortlist announcement</strong> — we'll know if House of Many Verandahs makes the final 8 in the House (Rural) category.</div>
+        <div class="next-when">2 June 2026</div>
+      </div>
+      <div class="next-item">
+        <div class="next-text"><strong>Stir World pitch</strong> — sending the editorial pitch on laterite construction this week.</div>
+        <div class="next-when">This week</div>
+      </div>
+      <div class="next-item">
+        <div class="next-text"><strong>Verandah no.2 photo</strong> goes up on Instagram tomorrow evening.</div>
+        <div class="next-when">14 May, 7 PM</div>
+      </div>
+      <div class="next-item">
+        <div class="next-text"><strong>Dezeen feature timing</strong> — we expect to hear from their editorial team in the next 3–4 weeks.</div>
+        <div class="next-when">June 2026</div>
+      </div>
+      <div class="next-item">
+        <div class="next-text"><strong>301 NEXT Bangalore</strong> — we've been invited to speak about the house in November.</div>
+        <div class="next-when">Nov 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signature -->
+  <div class="sig">
+    <div class="sig-body">
+      <p class="sig-note">"Working on your house has been the best thing about our last two years. We'll keep this page honest — the wins and the rejections both."</p>
+      <p class="sig-from">— <b>Aanya Kapoor</b>, principal · for the studio</p>
+    </div>
+    <div class="sig-buttons">
+      <a class="btn-secondary btn">Email us</a>
+      <a class="btn">View previous updates</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div>Karkhana Architects · 6/B Ranwar, Bandra West, Mumbai 400050</div>
+    <div>This is a private page · <a>karkhana.studio</a></div>
+  </div>
+
+</div>
+
+</body>
+</html>

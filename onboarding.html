@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to Atrium — Studio onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f2ec;
+    --bg-2: #ede9df;
+    --card: #ffffff;
+    --border: #e6e1d6;
+    --border-strong: #d5cebc;
+    --text: #1c1a17;
+    --text-2: #6b665d;
+    --text-3: #9a9388;
+    --accent: #b8542e;
+    --accent-2: #2d3e36;
+    --success: #4a6741;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: 'DM Serif Display', Georgia, serif; }
+
+  /* Layout */
+  .shell { display: grid; grid-template-columns: 360px 1fr; min-height: 100vh; }
+
+  /* Sidebar */
+  .side {
+    background: var(--accent-2);
+    color: var(--bg);
+    padding: 40px 36px;
+    display: flex;
+    flex-direction: column;
+  }
+  .side-logo { display: flex; align-items: baseline; gap: 8px; margin-bottom: 56px; }
+  .side-logo .name { font-family: 'DM Serif Display', serif; font-size: 28px; }
+  .side-logo .tag { font-size: 11px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .steps { flex: 1; }
+  .step-item {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    opacity: 0.45;
+    transition: opacity 0.2s;
+  }
+  .step-item.done { opacity: 0.7; }
+  .step-item.current { opacity: 1; }
+  .step-num {
+    width: 24px; height: 24px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-item.done .step-num { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
+  .step-item.current .step-num { background: var(--accent); border-color: var(--accent); color: white; }
+  .step-label { font-size: 13px; line-height: 1.4; }
+  .step-sub { font-size: 11px; opacity: 0.6; margin-top: 2px; }
+  .step-item.current .step-label { font-weight: 500; }
+
+  .side-foot { font-size: 11px; opacity: 0.5; }
+  .side-foot a { color: inherit; }
+
+  /* Main */
+  .main { padding: 48px 60px 80px; max-width: 720px; overflow-y: auto; }
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 11%;
+    transition: width 0.4s;
+  }
+  .progress-text {
+    font-size: 11px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+
+  .step-title { font-size: 36px; line-height: 1.1; letter-spacing: -0.015em; margin-bottom: 10px; }
+  .step-intro { color: var(--text-2); font-size: 15px; margin-bottom: 32px; max-width: 560px; line-height: 1.6; }
+
+  /* Form */
+  .field { margin-bottom: 20px; }
+  .field-label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .field-hint { font-size: 12px; color: var(--text-3); margin-bottom: 8px; }
+  .input, .select, .textarea {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    transition: border-color 0.15s;
+  }
+  .input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--accent); }
+  .textarea { min-height: 110px; resize: vertical; line-height: 1.55; }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+  /* Chip select */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    padding: 7px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 18px;
+    font-size: 13px;
+    cursor: pointer;
+    background: var(--card);
+    transition: all 0.15s;
+  }
+  .chip:hover { border-color: var(--text); }
+  .chip.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+  /* Footer / actions */
+  .actions {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .btn {
+    background: var(--text);
+    color: var(--bg);
+    border: 0;
+    padding: 11px 22px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.9; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-2);
+    border: 0;
+    padding: 11px 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  .btn-ghost:hover { color: var(--text); }
+  .btn-accent { background: var(--accent); color: white; }
+
+  /* Sample upload zone */
+  .upload {
+    border: 2px dashed var(--border-strong);
+    border-radius: 10px;
+    padding: 28px 24px;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 16px;
+  }
+  .upload:hover { border-color: var(--accent); background: rgba(184,84,46,0.03); }
+  .upload-icon { font-size: 28px; color: var(--text-3); }
+  .upload-text { font-size: 14px; margin-top: 6px; }
+  .upload-sub { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+
+  .sample-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--text-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sample-card b { color: var(--text); font-weight: 500; }
+
+  /* Palette picker */
+  .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .swatch-pick { aspect-ratio: 1; border-radius: 8px; cursor: pointer; position: relative; border: 1px solid var(--border); }
+  .swatch-pick.on::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  }
+
+  /* Synth screen */
+  .synth-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+  }
+  .synth-spinner {
+    width: 56px; height: 56px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 24px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .synth-title { font-size: 28px; letter-spacing: -0.01em; margin-bottom: 10px; }
+  .synth-status { font-size: 14px; color: var(--text-2); height: 22px; }
+  .synth-progress {
+    margin-top: 32px;
+    text-align: left;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    width: 380px;
+    max-width: 100%;
+  }
+  .synth-task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 0;
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .synth-task.done { color: var(--text); }
+  .synth-task.active { color: var(--text); }
+  .synth-check {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+  .synth-task.done .synth-check { background: var(--success); border-color: var(--success); color: white; }
+  .synth-task.active .synth-check { border-color: var(--accent); background: var(--accent); color: white; animation: pulse 1.4s infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(184,84,46,0.15); } }
+
+  /* Result */
+  .voice-doc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 16px;
+  }
+  .voice-attr { padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .voice-attr:last-child { border-bottom: 0; }
+  .voice-attr-name { font-family: 'DM Serif Display', serif; font-size: 18px; margin-bottom: 4px; }
+  .voice-attr-desc { font-size: 13px; line-height: 1.55; color: var(--text-2); }
+  .voice-pill {
+    display: inline-block;
+    font-size: 10px;
+    background: var(--text);
+    color: var(--bg);
+    padding: 3px 8px;
+    border-radius: 8px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-right: 8px;
+  }
+
+  /* Success screen */
+  .done-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+  }
+  .done-glyph {
+    font-family: 'DM Serif Display', serif;
+    font-size: 80px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+  .done-title { font-size: 36px; margin-bottom: 12px; letter-spacing: -0.015em; }
+  .done-body { color: var(--text-2); max-width: 460px; margin-bottom: 28px; font-size: 15px; line-height: 1.6; }
+  .done-next {
+    display: flex;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    align-items: center;
+    width: 460px;
+    max-width: 100%;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  .done-next-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--bg-2); display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .done-next-text { font-size: 13px; flex: 1; }
+  .done-next-text b { font-weight: 500; }
+  .done-next-arrow { color: var(--text-3); }
+
+  .step.hidden { display: none; }
+
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    .side { padding: 24px 28px; }
+    .steps { display: none; }
+    .side-logo { margin-bottom: 0; }
+    .main { padding: 32px 28px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- Sidebar -->
+  <aside class="side">
+    <div class="side-logo">
+      <span class="name">Atrium</span>
+      <span class="tag">SETUP</span>
+    </div>
+    <div class="steps" id="stepNav">
+      <div class="step-item current" data-step="1"><div class="step-num">1</div><div><div class="step-label">Welcome</div><div class="step-sub">A quick note before we start</div></div></div>
+      <div class="step-item" data-step="2"><div class="step-num">2</div><div><div class="step-label">Studio basics</div><div class="step-sub">Name, founded, where you are</div></div></div>
+      <div class="step-item" data-step="3"><div class="step-num">3</div><div><div class="step-label">What you build</div><div class="step-sub">Project types and scale</div></div></div>
+      <div class="step-item" data-step="4"><div class="step-num">4</div><div><div class="step-label">How you work</div><div class="step-sub">Philosophy and values</div></div></div>
+      <div class="step-item" data-step="5"><div class="step-num">5</div><div><div class="step-label">Train your voice</div><div class="step-sub">Paste 2–3 things you've written</div></div></div>
+      <div class="step-item" data-step="6"><div class="step-num">6</div><div><div class="step-label">Identity</div><div class="step-sub">Logo, palette, type</div></div></div>
+      <div class="step-item" data-step="7"><div class="step-num">7</div><div><div class="step-label">Synthesising</div><div class="step-sub">We're reading your samples</div></div></div>
+      <div class="step-item" data-step="8"><div class="step-num">8</div><div><div class="step-label">Your voice</div><div class="step-sub">Confirm or edit what we found</div></div></div>
+      <div class="step-item" data-step="9"><div class="step-num">9</div><div><div class="step-label">Ready</div><div class="step-sub">Open your studio</div></div></div>
+    </div>
+    <div class="side-foot">
+      Need help? Email <a href="mailto:hi@atrium.studio">hi@atrium.studio</a>.
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <!-- Step 1: Welcome -->
+    <div class="step" data-step="1">
+      <div class="progress-text">Step 1 of 9 · About 7 minutes</div>
+      <h1 class="step-title serif">Welcome. Let's set up your studio.</h1>
+      <p class="step-intro">Before you can start packaging projects or scheduling posts, we need to learn how your studio sounds, what you build, and a few visual basics. The more honest you are in the next few steps, the more useful Atrium becomes.</p>
+
+      <div style="background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 22px 26px; margin-bottom: 24px;">
+        <div style="font-size: 13px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">Here's what we'll cover</div>
+        <ul style="list-style: none; font-size: 14px; line-height: 2;">
+          <li>· Studio basics — name, location, team</li>
+          <li>· What you build — project types and scale</li>
+          <li>· How you work — your design philosophy in your words</li>
+          <li>· Train your voice — paste 2–3 things you've written before</li>
+          <li>· Identity — your logo, colours and fonts</li>
+        </ul>
+        <div style="font-size: 12px; color: var(--text-3); margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">You can leave at any time and come back — we save as you go.</div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-ghost">Skip setup for now</button>
+        <button class="btn" onclick="next()">Start setup →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Basics -->
+    <div class="step hidden" data-step="2">
+      <div class="progress-text">Step 2 of 9</div>
+      <h1 class="step-title serif">Studio basics</h1>
+      <p class="step-intro">The essentials we'll use across every package, every share, every post.</p>
+
+      <div class="field">
+        <label class="field-label">Studio name</label>
+        <input class="input" placeholder="e.g. Karkhana Architects" value="Karkhana Architects">
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label class="field-label">Founded</label>
+          <input class="input" placeholder="2019" value="2019">
+        </div>
+        <div class="field">
+          <label class="field-label">Based in</label>
+          <input class="input" placeholder="Mumbai, India" value="Mumbai, India">
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label class="field-label">Principal / founder name</label>
+          <input class="input" placeholder="e.g. Aanya Kapoor" value="Aanya Kapoor">
+        </div>
+        <div class="field">
+          <label class="field-label">Studio website</label>
+          <input class="input" placeholder="karkhana.studio" value="karkhana.studio">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">One-line description</label>
+        <div class="field-hint">If a stranger asked "what does your studio do?" — what would you say in one sentence?</div>
+        <input class="input" placeholder="e.g. Small, slow buildings made of place — laterite, brick, lime, timber." value="Small, slow buildings made of place — laterite, brick, lime, timber.">
+      </div>
+
+      <div class="actions">
+        <button class="btn-ghost" onclick="back()">← Back</button>
+        <button class="btn" onclick="next()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: What you build -->
+    <div class="step hidden" data-step="3">
+      <div class="progress-text">Step 3 of 9</div>
+      <h1 class="step-title serif">What you build</h1>
+      <p class="step-intro">Used to suggest the right outlets (an award for adaptive reuse won't be useful to a landscape studio).</p>
+
+      <div class="field">
+        <label class="field-label">Studio scale</label>
+        <div class="chips" data-single>
+          <div class="chip">Solo practitioner</div>
+          <div class="chip on">2–5 people</div>
+          <div class="chip">6–10 people</div>
+          <div class="chip">11+ people</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Project types you regularly take on</label>
+        <div class="field-hint">Pick all that apply. You can adjust later.</div>
+        <div class="chips">
+          <div class="chip on">Residential</div>
+          <div class="chip">Institutional</div>
+          <div class="chip on">Adaptive reuse</div>
+          <div class="chip">Hospitality</div>
+          <div class="chip">Interior</div>
+          <div class="chip">Commercial</div>
+          <div class="chip">Landscape</div>
+          <div class="chip">Public</div>
+          <div class="chip">Workplace</div>
+          <div class="chip">Urban / planning</div>
+          <div class="chip">Exhibition</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Materials you keep returning to</label>
+        <div class="field-hint">These show up in your project descriptions and help shape the AI's vocabulary.</div>
+        <div class="chips">
+          <div class="chip on">Laterite</div>
+          <div class="chip on">Brick</div>
+          <div class="chip on">Lime</div>
+          <div class="chip on">Timber</div>
+          <div class="chip">Concrete</div>
+          <div class="chip">Stone</div>
+          <div class="chip">Steel</div>
+          <div class="chip">Bamboo</div>
+          <div class="chip">Glass</div>
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label class="field-label">Projects completed per year (avg)</label>
+          <input class="input" placeholder="6" value="6">
+        </div>
+        <div class="field">
+          <label class="field-label">Typical project size (sqm)</label>
+          <input class="input" placeholder="50–500" value="50–500">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-ghost" onclick="back()">← Back</button>
+        <button class="btn" onclick="next()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Philosophy -->
+    <div class="step hidden" data-step="4">
+      <div class="progress-text">Step 4 of 9</div>
+      <h1 class="step-title serif">How you work</h1>
+      <p class="step-intro">These two boxes do more than anything else in setup. Be specific. Write the things you actually say to clients — not the things you'd put on a website you don't quite believe.</p>
+
+      <div class="field">
+        <label class="field-label">Your design philosophy</label>
+        <div class="field-hint">What's the way you approach a project that feels distinctly yours?</div>
+        <textarea class="textarea" placeholder="e.g. We work in section before we work in plan. We pick materials before we draw walls. We don't believe in 'iconic'; we believe in repeat detail.">We work in section before we work in plan. We pick materials before we draw walls. We don't believe in 'iconic'; we believe in repeat detail. Most projects are designed by walking the site twice and drawing twice.</textarea>
+      </div>
+
+      <div class="field">
+        <label class="field-label">What your studio values</label>
+        <div class="field-hint">Not a list of nice words — the actual non-negotiables.</div>
+        <textarea class="textarea" placeholder="e.g. Local labour wherever we can. No subcontracting design. Photographers and craftspeople credited by name. We answer the phone.">Local labour wherever we can. We don't subcontract design. Photographers and craftspeople are credited by name in every piece of writing. We answer the phone. We don't take a project we can't finish in three site visits a month.</textarea>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Three words you'd never put on your website</label>
+        <div class="field-hint">Helps us avoid them in everything we generate for you.</div>
+        <div class="row-3">
+          <input class="input" value="seamless">
+          <input class="input" value="iconic">
+          <input class="input" value="nestled">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-ghost" onclick="back()">← Back</button>
+        <button class="btn" onclick="next()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 5: Train your voice -->
+    <div class="step hidden" data-step="5">
+      <div class="progress-text">Step 5 of 9</div>
+      <h1 class="step-title serif">Train your voice</h1>
+      <p class="step-intro">Paste 2–3 pieces of writing you're proud of — your about page, a project description from an old website, a long social caption, a letter you wrote to a client. The more we can read, the more accurately we'll sound like you.</p>
+
+      <div class="upload">
+        <div class="upload-icon">↑</div>
+        <div class="upload-text">Paste text or drop .docx, .pdf, .txt</div>
+        <div class="upload-sub">Or paste a public link below — we'll fetch it.</div>
+      </div>
+
+      <input class="input" placeholder="https://karkhana.studio/about" style="margin-bottom: 24px;">
+
+      <div class="field-label">Samples you've already added</div>
+
+      <div class="sample-card">
+        <div><b>About page</b> — karkhana.studio/about · 420 words</div>
+        <div style="font-size: 12px; color: var(--text-3);">Auto-fetched</div>
+      </div>
+      <div class="sample-card">
+        <div><b>House of Many Verandahs</b> — project description · 380 words</div>
+        <div style="font-size: 12px; color: var(--text-3);">Pasted</div>
+      </div>
+      <div class="sample-card">
+        <div><b>Material Stories essay (Stir World)</b> — 1,140 words</div>
+        <div style="font-size: 12px; color: var(--text-3);">Auto-fetched</div>
+      </div>
+
+      <p style="font-size: 12px; color: var(--text-3); margin-top: 16px;">2 minimum. 3–5 is the sweet spot. Anything more is wasted.</p>
+
+      <div class="actions">
+        <button class="btn-ghost" onclick="back()">← Back</button>
+        <button class="btn" onclick="next()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 6: Identity -->
+    <div class="step hidden" data-step="6">
+      <div class="progress-text">Step 6 of 9</div>
+      <h1 class="step-title serif">Identity</h1>
+      <p class="step-intro">A logo, a few colours and a typeface or two. We'll use these in every shareable package and every client view.</p>
+
+      <div class="field">
+        <label class="field-label">Logo</label>
+        <div class="field-hint">SVG or transparent PNG works best. You can replace this later.</div>
+        <div style="display: flex; gap: 16px; align-items: center;">
+          <div style="width: 80px; height: 80px; background: var(--text); color: var(--bg); display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 36px; border-radius: 8px;">k.</div>
+          <button class="btn-ghost" style="padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: 8px;">Replace logo</button>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top: 28px;">
+        <label class="field-label">Brand colours</label>
+        <div class="field-hint">Pick 3–5. Drag to reorder; the first is your primary.</div>
+        <div class="palette-grid">
+          <div class="swatch-pick on" style="background: #1c1a17;"></div>
+          <div class="swatch-pick on" style="background: #b8542e;"></div>
+          <div class="swatch-pick on" style="background: #2d3e36;"></div>
+          <div class="swatch-pick on" style="background: #c0a880;"></div>
+          <div class="swatch-pick on" style="background: #f5f2ec;"></div>
+          <div class="swatch-pick" style="background: #4a6741;"></div>
+          <div class="swatch-pick" style="background: #876050;"></div>
+          <div class="swatch-pick" style="background: #5a6371;"></div>
+          <div class="swatch-pick" style="background: #c08b2f;"></div>
+          <div class="swatch-pick" style="background: #ffffff; border: 1px solid var(--border-strong);"></div>
+        </div>
+      </div>
+
+      <div class="row-2" style="margin-top: 28px;">
+        <div class="field">
+          <label class="field-label">Display typeface</label>
+          <select class="select">
+            <option selected>DM Serif Display</option>
+            <option>Playfair Display</option>
+            <option>Cormorant Garamond</option>
+            <option>EB Garamond</option>
+            <option>Inter</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Body typeface</label>
+          <select class="select">
+            <option selected>Inter</option>
+            <option>IBM Plex Sans</option>
+            <option>Söhne</option>
+            <option>Untitled Sans</option>
+            <option>Georgia</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-ghost" onclick="back()">← Back</button>
+        <button class="btn btn-accent" onclick="next()">Synthesise my brand voice →</button>
+      </div>
+    </div>
+
+    <!-- Step 7: Synth -->
+    <div class="step hidden" data-step="7">
+      <div class="synth-wrap">
+        <div class="synth-spinner"></div>
+        <div class="synth-title serif">Reading your studio.</div>
+        <div class="synth-status" id="synthStatus">Reading "About page"…</div>
+
+        <div class="synth-progress" id="synthProgress">
+          <div class="synth-task active" data-task="1"><span class="synth-check">✓</span> Reading samples (3 of 3)</div>
+          <div class="synth-task" data-task="2"><span class="synth-check">✓</span> Looking for sentence patterns</div>
+          <div class="synth-task" data-task="3"><span class="synth-check">✓</span> Cross-checking with your philosophy</div>
+          <div class="synth-task" data-task="4"><span class="synth-check">✓</span> Drafting voice attributes</div>
+          <div class="synth-task" data-task="5"><span class="synth-check">✓</span> Building do/don't list</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 8: Voice -->
+    <div class="step hidden" data-step="8">
+      <div class="progress-text">Step 8 of 9</div>
+      <h1 class="step-title serif">Here's how we'll write for you.</h1>
+      <p class="step-intro">Based on your three samples and your philosophy, here are three voice attributes and a do/don't list. Edit anything that doesn't sound right — every other AI feature in Atrium reads from this doc.</p>
+
+      <div class="voice-doc">
+        <div class="voice-attr">
+          <div style="margin-bottom: 6px;"><span class="voice-pill">01</span></div>
+          <div class="voice-attr-name">Specific, not poetic</div>
+          <div class="voice-attr-desc">You write with materials, dimensions and numbers in the sentence. Avoid "stunning", "seamless", "harmonious blend" — replace them with the actual thing. A wall is not "elegant"; it is "375mm laterite, dry-stacked".</div>
+        </div>
+        <div class="voice-attr">
+          <div style="margin-bottom: 6px;"><span class="voice-pill">02</span></div>
+          <div class="voice-attr-name">Section over plan</div>
+          <div class="voice-attr-desc">When describing a project, lead with the section idea — the vertical move, the layered space — and only then the plan. This applies to social, to award text, and to client conversations.</div>
+        </div>
+        <div class="voice-attr">
+          <div style="margin-bottom: 6px;"><span class="voice-pill">03</span></div>
+          <div class="voice-attr-name">The studio behind the building</div>
+          <div class="voice-attr-desc">Always credit the photographer, collaborators and craftspeople by name. Refers to the studio as "we" not "the studio". Process is shown, not gestured at.</div>
+        </div>
+      </div>
+
+      <div style="background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 22px 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div>
+          <div style="font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">Do</div>
+          <ul style="list-style: none; font-size: 13px; line-height: 1.8;">
+            <li style="padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: var(--success); font-weight: 700;">+</span>Lead with the section or the material</li>
+            <li style="padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: var(--success); font-weight: 700;">+</span>Use rupees, sqm, mm — not "spacious"</li>
+            <li style="padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: var(--success); font-weight: 700;">+</span>Name the photographer in every post</li>
+            <li style="padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: var(--success); font-weight: 700;">+</span>Indian English, no full stops in headlines</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">Don't</div>
+          <ul style="list-style: none; font-size: 13px; line-height: 1.8;">
+            <li style="padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: #a83a2c; font-weight: 700;">−</span>"Iconic", "stunning", "blend", "elevate"</li>
+            <li style="padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: #a83a2c; font-weight: 700;">−</span>Open with "Nestled in..."</li>
+            <li style="padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: #a83a2c; font-weight: 700;">−</span>AI-feeling phrases ("dive into", "in conclusion")</li>
+            <li style="padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: #a83a2c; font-weight: 700;">−</span>Third person about ourselves</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-ghost" onclick="back()">← Back</button>
+        <div>
+          <button class="btn-ghost" style="margin-right: 12px;">Edit voice doc</button>
+          <button class="btn" onclick="next()">Looks right → finish setup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 9: Done -->
+    <div class="step hidden" data-step="9">
+      <div class="done-wrap">
+        <div class="done-glyph">k.</div>
+        <h1 class="done-title serif">Karkhana is set up.</h1>
+        <p class="done-body">Your brand voice is saved. We've pre-seeded 24 outlets relevant to your scale and project types. Here's what to do first:</p>
+
+        <a class="done-next" onclick="goToApp()">
+          <div class="done-next-icon">▣</div>
+          <div class="done-next-text">Add your first project — <b>5 minutes</b><br><span style="color: var(--text-3); font-size: 12px;">Paste an old project description; we'll rewrite it in your voice.</span></div>
+          <div class="done-next-arrow">→</div>
+        </a>
+
+        <a class="done-next" onclick="goToApp()">
+          <div class="done-next-icon">↗</div>
+          <div class="done-next-text">Connect Instagram and LinkedIn — <b>2 minutes</b><br><span style="color: var(--text-3); font-size: 12px;">So we can schedule the social posts we draft.</span></div>
+          <div class="done-next-arrow">→</div>
+        </a>
+
+        <a class="done-next" onclick="goToApp()">
+          <div class="done-next-icon">○</div>
+          <div class="done-next-text">Invite a teammate — <b>1 minute</b><br><span style="color: var(--text-3); font-size: 12px;">You can give them Editor or Viewer access.</span></div>
+          <div class="done-next-arrow">→</div>
+        </a>
+
+        <button class="btn btn-accent" style="margin-top: 32px;" onclick="goToApp()">Open my studio →</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  let currentStep = 1;
+  const totalSteps = 9;
+
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.add('hidden'));
+    document.querySelector(`.step[data-step="${n}"]`).classList.remove('hidden');
+    document.getElementById('progressFill').style.width = `${(n / totalSteps) * 100}%`;
+    // sidebar
+    document.querySelectorAll('.step-item').forEach(item => {
+      const s = parseInt(item.dataset.step);
+      item.classList.remove('current', 'done');
+      if (s < n) item.classList.add('done');
+      if (s === n) item.classList.add('current');
+    });
+    window.scrollTo(0, 0);
+    if (n === 7) runSynth();
+  }
+
+  function next() {
+    if (currentStep < totalSteps) {
+      currentStep++;
+      showStep(currentStep);
+    }
+  }
+  function back() {
+    if (currentStep > 1) {
+      currentStep--;
+      showStep(currentStep);
+    }
+  }
+
+  // Chip selection
+  document.querySelectorAll('.chips').forEach(group => {
+    const single = group.hasAttribute('data-single');
+    group.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        if (single) {
+          group.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+          chip.classList.add('on');
+        } else {
+          chip.classList.toggle('on');
+        }
+      });
+    });
+  });
+
+  // Palette pick
+  document.querySelectorAll('.swatch-pick').forEach(s => {
+    s.addEventListener('click', () => s.classList.toggle('on'));
+  });
+
+  // Synth animation
+  function runSynth() {
+    const statuses = [
+      'Reading "About page"…',
+      'Reading "House of Many Verandahs"…',
+      'Reading "Material Stories essay"…',
+      'Looking for sentence patterns…',
+      'Cross-checking with your philosophy…',
+      'Drafting voice attributes…',
+      'Building do/don\'t list…',
+      'Almost done…'
+    ];
+    const statusEl = document.getElementById('synthStatus');
+    const tasks = document.querySelectorAll('.synth-task');
+    tasks.forEach(t => t.classList.remove('done', 'active'));
+    tasks[0].classList.add('active');
+
+    let i = 0;
+    let t = 0;
+    const interval = setInterval(() => {
+      i++;
+      if (i < statuses.length) {
+        statusEl.textContent = statuses[i];
+      }
+      // advance task ticks at certain points
+      if (i === 3) {
+        tasks[0].classList.remove('active');
+        tasks[0].classList.add('done');
+        tasks[1].classList.add('active');
+      } else if (i === 4) {
+        tasks[1].classList.remove('active');
+        tasks[1].classList.add('done');
+        tasks[2].classList.add('active');
+      } else if (i === 5) {
+        tasks[2].classList.remove('active');
+        tasks[2].classList.add('done');
+        tasks[3].classList.add('active');
+      } else if (i === 6) {
+        tasks[3].classList.remove('active');
+        tasks[3].classList.add('done');
+        tasks[4].classList.add('active');
+      } else if (i >= statuses.length) {
+        tasks[4].classList.remove('active');
+        tasks[4].classList.add('done');
+        statusEl.textContent = 'Done. Showing you your voice…';
+        clearInterval(interval);
+        setTimeout(() => { currentStep = 8; showStep(8); }, 900);
+      }
+    }, 700);
+  }
+
+  function goToApp() {
+    alert('In the real app, this opens the dashboard. For now, open atrium-app.html in the Comms folder to see what comes next.');
+  }
+
+  showStep(1);
+</script>
+
+</body>
+</html>

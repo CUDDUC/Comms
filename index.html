@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atrium — Studio Communications · Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f2ec;
+    --bg-2: #ede9df;
+    --card: #ffffff;
+    --border: #e6e1d6;
+    --border-strong: #d5cebc;
+    --text: #1c1a17;
+    --text-2: #6b665d;
+    --text-3: #9a9388;
+    --accent: #b8542e;
+    --accent-2: #2d3e36;
+    --success: #4a6741;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+  }
+  .serif { font-family: 'DM Serif Display', Georgia, serif; }
+
+  /* Top bar */
+  .demo-bar {
+    height: 56px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .brand-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    line-height: 1;
+  }
+  .brand-tag {
+    font-size: 10px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* View switcher */
+  .switcher {
+    display: flex;
+    background: var(--bg-2);
+    padding: 4px;
+    border-radius: 10px;
+    gap: 2px;
+  }
+  .view-btn {
+    background: transparent;
+    border: 0;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text-2);
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .view-btn:hover { color: var(--text); }
+  .view-btn.active {
+    background: var(--card);
+    color: var(--text);
+    box-shadow: 0 1px 2px rgba(28,26,23,0.06), 0 2px 6px rgba(28,26,23,0.04);
+  }
+  .view-btn .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--text-3);
+  }
+  .view-btn.active .dot { background: var(--accent); }
+
+  /* Right side actions */
+  .actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .action-link {
+    font-size: 12px;
+    color: var(--text-2);
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .action-link:hover { color: var(--text); background: var(--bg-2); }
+  .info-icon {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    color: var(--text-2);
+    font-size: 14px;
+    background: var(--card);
+  }
+  .info-icon:hover { color: var(--text); border-color: var(--text); }
+
+  /* Iframe container */
+  .stage {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .stage iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: var(--bg);
+  }
+  .stage iframe.active {
+    opacity: 1;
+    z-index: 2;
+  }
+
+  /* About / overview */
+  .stage-about {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    padding: 48px 32px;
+    display: none;
+    background: var(--bg);
+  }
+  .stage-about.active { display: block; z-index: 3; }
+  .about-wrap {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .about-hero {
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .about-eyebrow {
+    font-size: 11px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .about-title {
+    font-size: 48px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+  .about-sub {
+    font-size: 17px;
+    color: var(--text-2);
+    line-height: 1.55;
+    max-width: 640px;
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .about-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    text-align: left;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    text-decoration: none;
+    display: block;
+  }
+  .about-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(28,26,23,0.06);
+    border-color: var(--border-strong);
+  }
+  .about-card-num {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--text-3);
+    margin-bottom: 8px;
+  }
+  .about-card-title {
+    font-size: 20px;
+    font-family: 'DM Serif Display', serif;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .about-card-desc {
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.55;
+    margin-bottom: 16px;
+  }
+  .about-card-cta {
+    font-size: 12px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+
+  .about-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 16px;
+  }
+  .about-section h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 14px;
+  }
+  .about-section p {
+    color: var(--text-2);
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+  .about-section ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  .about-section ul li {
+    padding: 6px 0 6px 22px;
+    position: relative;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .about-section ul li::before {
+    content: '·';
+    position: absolute;
+    left: 6px;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1;
+  }
+  .docs-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .doc-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--bg-2);
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  .doc-link:hover { border-color: var(--border-strong); }
+  .doc-icon {
+    width: 32px; height: 32px;
+    background: var(--text);
+    color: var(--bg);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .doc-meta { flex: 1; }
+  .doc-name { font-size: 13px; font-weight: 500; }
+  .doc-desc { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+  /* Empty / fallback */
+  .iframe-fallback {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 40px;
+    text-align: center;
+    z-index: 1;
+  }
+  .iframe-fallback.active { display: flex; }
+  .iframe-fallback h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .iframe-fallback p {
+    color: var(--text-2);
+    max-width: 460px;
+    line-height: 1.55;
+    margin-bottom: 20px;
+  }
+  .iframe-fallback a {
+    display: inline-block;
+    padding: 10px 20px;
+    background: var(--text);
+    color: var(--bg);
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px;
+  }
+
+  /* First-load welcome (small toast) */
+  .welcome {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text);
+    color: var(--bg);
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-size: 13px;
+    box-shadow: 0 10px 24px rgba(28,26,23,0.18);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    animation: slideUp 0.4s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translate(-50%, 30px); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+  }
+  .welcome-close {
+    background: transparent;
+    border: 0;
+    color: var(--bg);
+    cursor: pointer;
+    font-size: 16px;
+    opacity: 0.6;
+  }
+  .welcome-close:hover { opacity: 1; }
+
+  /* Mobile */
+  @media (max-width: 720px) {
+    .demo-bar { flex-wrap: wrap; height: auto; padding: 12px 14px; gap: 10px; }
+    .switcher { order: 3; width: 100%; }
+    .view-btn { flex: 1; justify-content: center; padding: 7px 8px; font-size: 12px; }
+    .about-grid { grid-template-columns: 1fr; }
+    .docs-row { grid-template-columns: 1fr; }
+    .about-title { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    <div class="brand" onclick="showView('about')">
+      <span class="brand-name">Atrium</span>
+      <span class="brand-tag">v0.1 · Demo</span>
+    </div>
+
+    <div class="switcher">
+      <button class="view-btn active" data-view="about" onclick="showView('about')">
+        <span class="dot"></span> Overview
+      </button>
+      <button class="view-btn" data-view="onboarding" onclick="showView('onboarding')">
+        <span class="dot"></span> Onboarding
+      </button>
+      <button class="view-btn" data-view="app" onclick="showView('app')">
+        <span class="dot"></span> Studio app
+      </button>
+      <button class="view-btn" data-view="client" onclick="showView('client')">
+        <span class="dot"></span> Client view
+      </button>
+    </div>
+
+    <div class="actions">
+      <a class="action-link" onclick="reloadCurrent()">↻ Reset view</a>
+      <div class="info-icon" title="Open in new tab" onclick="openCurrentInTab()">↗</div>
+    </div>
+  </div>
+
+  <div class="stage">
+
+    <!-- Overview -->
+    <div class="stage-about active" id="view-about">
+      <div class="about-wrap">
+        <div class="about-hero">
+          <div class="about-eyebrow">A demo of the studio communications platform</div>
+          <h1 class="about-title serif">Atrium</h1>
+          <p class="about-sub">A single place where a small architectural studio can hold its brand, package its projects for the world, and let its clients see exactly where their building has been seen.</p>
+        </div>
+
+        <div class="about-grid">
+          <a class="about-card" onclick="showView('onboarding')">
+            <div class="about-card-num">i.</div>
+            <div class="about-card-title">Onboarding</div>
+            <div class="about-card-desc">Nine steps a new studio walks through once. Captures voice, philosophy, identity — then synthesises a brand voice doc the rest of the app reads from.</div>
+            <div class="about-card-cta">Walk through →</div>
+          </a>
+          <a class="about-card" onclick="showView('app')">
+            <div class="about-card-num">ii.</div>
+            <div class="about-card-title">Studio app</div>
+            <div class="about-card-desc">The day-to-day workspace. Projects, an outreach Kanban for submissions to awards and publications, a social media studio, brand vault, archive.</div>
+            <div class="about-card-cta">Open the app →</div>
+          </a>
+          <a class="about-card" onclick="showView('client')">
+            <div class="about-card-num">iii.</div>
+            <div class="about-card-title">Client view</div>
+            <div class="about-card-desc">What the studio's client sees when they're sent a share link. Pipeline, wins, social activity, what's next — public, view-only, polished.</div>
+            <div class="about-card-cta">See the client page →</div>
+          </a>
+        </div>
+
+        <div class="about-section">
+          <h3>How to use this demo</h3>
+          <p>The three views above are the three experiences inside Atrium. Use the switcher at the top of this page to move between them — they share the same fictional studio (<em>Karkhana Architects</em>, Mumbai) and the same seed data, so you can follow one studio across all three views.</p>
+          <p>Inside the <strong>Studio app</strong> you can also flip between two demo studios using the switcher in its sidebar — useful for showing how multi-tenancy works.</p>
+        </div>
+
+        <div class="about-section">
+          <h3>What the demo is and isn't</h3>
+          <ul>
+            <li>It's a high-fidelity clickable prototype — every screen looks and feels like the real product.</li>
+            <li>It's not connected to anything yet — no real AI calls, no real database, no real social scheduling. AI buttons cycle through pre-written variants so the demo feels alive.</li>
+            <li>Use it to validate the UX with friendly studios before committing to the real build.</li>
+          </ul>
+        </div>
+
+        <div class="about-section">
+          <h3>The two reference documents</h3>
+          <p>These two markdown files live in the same Comms folder. Open them in any editor (or VS Code, Obsidian, Notion).</p>
+          <div class="docs-row">
+            <a class="doc-link" href="studio-comms-architecture.md" target="_blank">
+              <div class="doc-icon">A</div>
+              <div class="doc-meta">
+                <div class="doc-name">Architecture</div>
+                <div class="doc-desc">Stack, data model, AI layer, costs, phased build</div>
+              </div>
+            </a>
+            <a class="doc-link" href="softr-build-sheet.md" target="_blank">
+              <div class="doc-icon">B</div>
+              <div class="doc-meta">
+                <div class="doc-name">Softr build sheet</div>
+                <div class="doc-desc">Page-by-page guide for the actual build</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="about-section">
+          <h3>Suggested order if you're showing this to a studio</h3>
+          <ul>
+            <li>Start in <strong>Overview</strong> for 30 seconds — frame the three pieces.</li>
+            <li>Open the <strong>Studio app</strong>. Show the dashboard, then click into <em>House of Many Verandahs</em> to show how AI generates four lengths of project narrative.</li>
+            <li>Go to the <strong>Outreach Kanban</strong>. This is the screen most small studios immediately want.</li>
+            <li>Open the <strong>Client view</strong> from a tab. Pitch this as the transparency wedge — clients see everything the studio is doing for their project.</li>
+            <li>Finish in <strong>Onboarding</strong> only if they ask "how does the AI know my voice?" — it's the answer to that question.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Iframes -->
+    <iframe id="frame-onboarding" data-src="onboarding.html" title="Onboarding"></iframe>
+    <iframe id="frame-app" data-src="atrium-app.html" title="Studio app"></iframe>
+    <iframe id="frame-client" data-src="client-share.html" title="Client view"></iframe>
+
+    <!-- Fallback if iframe blocked -->
+    <div class="iframe-fallback" id="fallback">
+      <h2 class="serif">This view couldn't load in an iframe</h2>
+      <p>Some browsers block local files in iframes. Open the file directly instead.</p>
+      <a href="#" id="fallback-link" target="_blank">Open it in a new tab →</a>
+    </div>
+
+  </div>
+
+  <div class="welcome" id="welcome">
+    Use the switcher above to move between the three views.
+    <button class="welcome-close" onclick="document.getElementById('welcome').remove()">×</button>
+  </div>
+
+<script>
+  const views = ['about', 'onboarding', 'app', 'client'];
+  const fileMap = {
+    onboarding: 'onboarding.html',
+    app: 'atrium-app.html',
+    client: 'client-share.html'
+  };
+  let currentView = 'about';
+  const loaded = { onboarding: false, app: false, client: false };
+
+  function showView(view) {
+    currentView = view;
+
+    // Update buttons
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.view === view);
+    });
+
+    // Hide all iframes + about
+    document.getElementById('view-about').classList.remove('active');
+    document.querySelectorAll('.stage iframe').forEach(f => f.classList.remove('active'));
+    document.getElementById('fallback').classList.remove('active');
+
+    if (view === 'about') {
+      document.getElementById('view-about').classList.add('active');
+      return;
+    }
+
+    // Lazy-load the iframe on first access
+    const frame = document.getElementById('frame-' + view);
+    if (!loaded[view]) {
+      frame.src = frame.dataset.src;
+      loaded[view] = true;
+      frame.onerror = () => showFallback(view);
+    }
+    frame.classList.add('active');
+  }
+
+  function showFallback(view) {
+    document.getElementById('fallback').classList.add('active');
+    const link = document.getElementById('fallback-link');
+    link.href = fileMap[view];
+  }
+
+  function reloadCurrent() {
+    if (currentView === 'about') {
+      window.location.reload();
+      return;
+    }
+    const frame = document.getElementById('frame-' + currentView);
+    if (frame.src) frame.src = frame.src;
+  }
+
+  function openCurrentInTab() {
+    if (currentView === 'about') {
+      window.open('index.html', '_blank');
+      return;
+    }
+    window.open(fileMap[currentView], '_blank');
+  }
+
+  // Dismiss welcome after 5s
+  setTimeout(() => {
+    const w = document.getElementById('welcome');
+    if (w) {
+      w.style.transition = 'opacity 0.4s';
+      w.style.opacity = '0';
+      setTimeout(() => w.remove(), 400);
+    }
+  }, 5500);
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const map = { '1': 'about', '2': 'onboarding', '3': 'app', '4': 'client' };
+    if (map[e.key]) showView(map[e.key]);
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atrium — Studio Communications</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f2ec;
+    --bg-2: #ede9df;
+    --card: #ffffff;
+    --border: #e6e1d6;
+    --border-strong: #d5cebc;
+    --text: #1c1a17;
+    --text-2: #6b665d;
+    --text-3: #9a9388;
+    --accent: #b8542e;
+    --accent-2: #2d3e36;
+    --success: #4a6741;
+    --warning: #c08b2f;
+    --danger: #a83a2c;
+    --info: #3a5e7a;
+    --shadow: 0 1px 2px rgba(28,26,23,0.04), 0 4px 12px rgba(28,26,23,0.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--bg-2);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+  .logo {
+    padding: 0 24px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .logo-mark { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  .logo-tag { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; }
+  .studio-switch {
+    margin: 20px 16px;
+    padding: 10px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .studio-switch:hover { border-color: var(--border-strong); }
+  .studio-avatar {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: var(--accent-2);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .studio-name { font-weight: 500; font-size: 13px; flex: 1; }
+  .studio-plan { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .nav-section { padding: 12px 16px; }
+  .nav-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; padding: 0 10px 6px; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-item:hover { background: rgba(28,26,23,0.04); color: var(--text); }
+  .nav-item.active { background: var(--card); color: var(--text); font-weight: 500; box-shadow: var(--shadow); }
+  .nav-icon { width: 16px; height: 16px; opacity: 0.7; }
+  .nav-item.active .nav-icon { opacity: 1; color: var(--accent); }
+  .nav-count {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--text-3);
+    background: var(--bg);
+    padding: 2px 6px;
+    border-radius: 8px;
+  }
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-3);
+  }
+
+  /* Main */
+  .main { padding: 0; }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .crumb { font-size: 12px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .crumb-sep { margin: 0 8px; }
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+  .search {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    width: 240px;
+    font-size: 13px;
+    color: var(--text);
+    font-family: inherit;
+  }
+  .search::placeholder { color: var(--text-3); }
+  .btn {
+    background: var(--text);
+    color: var(--bg);
+    border: 0;
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.05s;
+  }
+  .btn:hover { opacity: 0.9; }
+  .btn:active { transform: translateY(1px); }
+  .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border-strong); }
+  .btn-accent { background: var(--accent); color: white; }
+  .btn-ghost { background: transparent; color: var(--text-2); padding: 6px 10px; }
+  .btn-ghost:hover { background: rgba(28,26,23,0.04); color: var(--text); }
+  .btn-sm { padding: 6px 10px; font-size: 12px; }
+
+  .screen { display: none; padding: 32px 40px 60px; }
+  .screen.active { display: block; }
+  .screen-header { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  .screen-title { font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; }
+  .screen-sub { color: var(--text-2); margin-top: 6px; font-size: 14px; }
+
+  /* Dashboard */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+  .kpi {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .kpi-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .kpi-value { font-size: 32px; line-height: 1.1; margin: 8px 0 4px; letter-spacing: -0.02em; }
+  .kpi-delta { font-size: 12px; color: var(--success); }
+  .kpi-delta.neg { color: var(--danger); }
+  .kpi-delta.neutral { color: var(--text-3); }
+
+  .panel-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; }
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .panel-title { font-size: 14px; font-weight: 600; }
+  .panel-link { font-size: 12px; color: var(--accent); cursor: pointer; text-decoration: none; }
+
+  .activity-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .activity-item:last-child { border-bottom: 0; }
+  .activity-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .activity-dot.success { background: var(--success); }
+  .activity-dot.info { background: var(--info); }
+  .activity-dot.warn { background: var(--warning); }
+  .activity-body { flex: 1; }
+  .activity-text { font-size: 13px; }
+  .activity-time { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+  .deadline-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .deadline-row:last-child { border-bottom: 0; }
+  .deadline-outlet { font-size: 13px; font-weight: 500; }
+  .deadline-detail { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .deadline-date {
+    font-size: 12px;
+    color: var(--text-2);
+    background: var(--bg);
+    padding: 3px 8px;
+    border-radius: 6px;
+  }
+  .deadline-date.urgent { color: var(--danger); background: rgba(168,58,44,0.08); }
+  .deadline-date.soon { color: var(--warning); background: rgba(192,139,47,0.08); }
+
+  /* Projects */
+  .project-toolbar { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
+  .chip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 5px 11px;
+    border-radius: 16px;
+    font-size: 12px;
+    color: var(--text-2);
+    cursor: pointer;
+  }
+  .chip.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .project-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(28,26,23,0.08); }
+  .project-hero {
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, var(--accent-2) 0%, #4a6258 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .project-hero.p2 { background: linear-gradient(135deg, #8a6a3c 0%, #b8854a 100%); }
+  .project-hero.p3 { background: linear-gradient(135deg, #54382c 0%, #876050 100%); }
+  .project-hero.p4 { background: linear-gradient(135deg, #5a6371 0%, #8a929c 100%); }
+  .project-hero.p5 { background: linear-gradient(135deg, #4a574a 0%, #7a8775 100%); }
+  .project-hero.p6 { background: linear-gradient(135deg, #6e4a3a 0%, #a07a64 100%); }
+  .project-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(255,255,255,0.04) 24px, rgba(255,255,255,0.04) 25px),
+                repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(255,255,255,0.04) 24px, rgba(255,255,255,0.04) 25px);
+  }
+  .project-status {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: rgba(0,0,0,0.55);
+    color: white;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    backdrop-filter: blur(6px);
+  }
+  .project-body { padding: 16px 18px; }
+  .project-title { font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
+  .project-meta { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+  .project-tags { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .tag {
+    font-size: 10px;
+    background: var(--bg);
+    color: var(--text-2);
+    padding: 3px 7px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* Project detail */
+  .detail-header {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .detail-hero {
+    aspect-ratio: 16/7;
+    background: linear-gradient(135deg, var(--accent-2) 0%, #4a6258 100%);
+    position: relative;
+  }
+  .detail-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 32px, rgba(255,255,255,0.04) 32px, rgba(255,255,255,0.04) 33px),
+                repeating-linear-gradient(90deg, transparent, transparent 32px, rgba(255,255,255,0.04) 32px, rgba(255,255,255,0.04) 33px);
+  }
+  .detail-body { padding: 24px 28px; display: grid; grid-template-columns: 2fr 1fr; gap: 32px; }
+  .detail-title { font-size: 36px; line-height: 1; letter-spacing: -0.015em; margin-bottom: 6px; }
+  .detail-sub { color: var(--text-2); font-size: 14px; margin-bottom: 16px; }
+  .detail-actions { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+  .meta-item { }
+  .meta-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .meta-value { font-size: 14px; margin-top: 2px; }
+
+  .detail-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+  .detail-tab { padding: 10px 16px; font-size: 13px; cursor: pointer; color: var(--text-2); border-bottom: 2px solid transparent; }
+  .detail-tab.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 500; }
+
+  .narrative-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+  }
+  .narrative-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .narrative-length { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .narrative-text { font-size: 14px; line-height: 1.65; color: var(--text); }
+  .narrative-text.serif { font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; font-weight: 400; }
+
+  /* AI panel */
+  .ai-panel {
+    background: linear-gradient(135deg, #fdfaf2 0%, #f8f3e6 100%);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .ai-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--text);
+    color: var(--bg);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 8px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .ai-loading {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid var(--border-strong);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Outreach Kanban */
+  .kanban {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(220px, 1fr));
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .kanban-col {
+    background: var(--bg-2);
+    border-radius: 12px;
+    padding: 12px;
+    min-height: 400px;
+  }
+  .kanban-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 0 4px;
+  }
+  .kanban-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+  .kanban-count { font-size: 11px; color: var(--text-3); }
+  .kanban-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+    cursor: grab;
+    transition: transform 0.1s, box-shadow 0.15s;
+  }
+  .kanban-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+  .kanban-outlet { font-size: 12px; font-weight: 600; color: var(--text); }
+  .kanban-project { font-size: 11px; color: var(--text-2); margin-top: 4px; }
+  .kanban-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .kanban-date { font-size: 10px; color: var(--text-3); }
+  .kanban-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+  .kanban-badge.award { background: rgba(192,139,47,0.12); color: var(--warning); }
+  .kanban-badge.pub { background: rgba(58,94,122,0.12); color: var(--info); }
+  .kanban-badge.lect { background: rgba(74,103,65,0.12); color: var(--success); }
+
+  /* Social */
+  .social-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; }
+  .upload-zone {
+    background: var(--card);
+    border: 2px dashed var(--border-strong);
+    border-radius: 12px;
+    padding: 40px 24px;
+    text-align: center;
+    margin-bottom: 16px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .upload-zone:hover { border-color: var(--accent); background: rgba(184,84,46,0.03); }
+  .upload-icon { font-size: 32px; color: var(--text-3); }
+  .upload-text { font-size: 14px; margin-top: 8px; }
+  .upload-sub { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+
+  .post-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 14px;
+  }
+  .post-thumb {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent-2) 0%, #4a6258 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .post-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 12px, rgba(255,255,255,0.06) 12px, rgba(255,255,255,0.06) 13px),
+                repeating-linear-gradient(90deg, transparent, transparent 12px, rgba(255,255,255,0.06) 12px, rgba(255,255,255,0.06) 13px);
+  }
+  .post-thumb.t2 { background: linear-gradient(135deg, #8a6a3c 0%, #b8854a 100%); }
+  .post-thumb.t3 { background: linear-gradient(135deg, #54382c 0%, #876050 100%); }
+  .post-thumb.t4 { background: linear-gradient(135deg, #5a6371 0%, #8a929c 100%); }
+  .post-channels { display: flex; gap: 4px; }
+  .channel-pill {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    background: var(--bg);
+    color: var(--text-2);
+  }
+  .channel-pill.ig { background: rgba(225,48,108,0.1); color: #c93573; }
+  .channel-pill.li { background: rgba(10,102,194,0.1); color: #0a66c2; }
+  .post-caption { font-size: 13px; line-height: 1.5; margin-top: 6px; color: var(--text); }
+  .post-meta { font-size: 11px; color: var(--text-3); margin-top: 6px; }
+
+  .composer {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .composer-head { display: flex; justify-content: space-between; margin-bottom: 14px; }
+  .composer-title { font-weight: 600; font-size: 14px; }
+  .composer textarea {
+    width: 100%;
+    min-height: 110px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.5;
+    resize: vertical;
+    color: var(--text);
+    background: var(--bg);
+  }
+  .composer textarea:focus { outline: none; border-color: var(--accent); }
+  .composer-options { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+  .opt-chip {
+    font-size: 11px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    color: var(--text-2);
+    background: var(--bg);
+  }
+  .opt-chip.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .composer-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .schedule-time { font-size: 12px; color: var(--text-2); }
+
+  /* Brand Vault */
+  .brand-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 20px; }
+  .voice-doc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+  }
+  .voice-attr {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .voice-attr:last-child { border-bottom: 0; }
+  .voice-attr-name {
+    font-size: 16px;
+    font-family: 'DM Serif Display', Georgia, serif;
+    margin-bottom: 6px;
+  }
+  .voice-attr-desc { font-size: 13px; line-height: 1.55; color: var(--text-2); }
+  .voice-do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+  .voice-list { font-size: 12px; }
+  .voice-list-head { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); margin-bottom: 8px; }
+  .voice-list li { padding: 4px 0; padding-left: 18px; position: relative; list-style: none; }
+  .voice-list.do li::before { content: '+'; position: absolute; left: 0; color: var(--success); font-weight: 700; }
+  .voice-list.dont li::before { content: '−'; position: absolute; left: 0; color: var(--danger); font-weight: 700; }
+
+  .palette-row { display: flex; gap: 10px; margin-bottom: 14px; }
+  .swatch { width: 56px; aspect-ratio: 1; border-radius: 8px; box-shadow: var(--shadow); }
+  .palette-label { font-size: 11px; color: var(--text-3); text-align: center; margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
+
+  /* Modal */
+  .modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(28,26,23,0.45);
+    backdrop-filter: blur(2px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--bg);
+    border-radius: 12px;
+    max-width: 560px;
+    width: 92%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(28,26,23,0.25);
+  }
+  .modal-head { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .modal-title { font-size: 18px; font-weight: 600; }
+  .modal-close { font-size: 20px; cursor: pointer; color: var(--text-3); background: transparent; border: 0; }
+  .modal-body { padding: 22px 24px; }
+  .modal-foot { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; background: var(--bg-2); border-radius: 0 0 12px 12px; }
+
+  /* Banner */
+  .banner {
+    background: var(--text);
+    color: var(--bg);
+    padding: 8px 40px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+  }
+  .banner a { color: var(--bg); text-decoration: underline; opacity: 0.8; }
+
+  /* Utility */
+  .row { display: flex; align-items: center; gap: 10px; }
+  .grow { flex: 1; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mt-24 { margin-top: 24px; }
+  .text-2 { color: var(--text-2); }
+  .text-3 { color: var(--text-3); }
+
+  /* Responsive-ish */
+  @media (max-width: 1100px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .panel-grid, .brand-grid, .social-layout { grid-template-columns: 1fr; }
+    .detail-body { grid-template-columns: 1fr; }
+    .project-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  Demo prototype — data is seeded. Use the studio switcher to toggle between two demo accounts. <a onclick="document.querySelector('.banner').style.display='none'">dismiss</a>
+</div>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <span class="logo-mark serif">Atrium</span>
+      <span class="logo-tag">v0.1</span>
+    </div>
+
+    <div class="studio-switch" onclick="toggleStudio()">
+      <div class="studio-avatar" id="studioAvatar">KA</div>
+      <div class="grow">
+        <div class="studio-name" id="studioName">Karkhana Architects</div>
+        <div class="studio-plan" id="studioPlan">Studio plan</div>
+      </div>
+      <span style="color: var(--text-3); font-size: 11px;">⇅</span>
+    </div>
+
+    <nav class="nav-section">
+      <div class="nav-label">Workspace</div>
+      <a class="nav-item active" data-screen="dashboard" onclick="goTo('dashboard', this)">
+        <span class="nav-icon">◆</span> Dashboard
+      </a>
+      <a class="nav-item" data-screen="projects" onclick="goTo('projects', this)">
+        <span class="nav-icon">▣</span> Projects <span class="nav-count">12</span>
+      </a>
+      <a class="nav-item" data-screen="outreach" onclick="goTo('outreach', this)">
+        <span class="nav-icon">↗</span> Outreach <span class="nav-count">7</span>
+      </a>
+      <a class="nav-item" data-screen="social" onclick="goTo('social', this)">
+        <span class="nav-icon">◐</span> Social <span class="nav-count">4</span>
+      </a>
+    </nav>
+
+    <nav class="nav-section">
+      <div class="nav-label">Studio</div>
+      <a class="nav-item" data-screen="brand" onclick="goTo('brand', this)">
+        <span class="nav-icon">◈</span> Brand Vault
+      </a>
+      <a class="nav-item" data-screen="archive" onclick="goTo('archive', this)">
+        <span class="nav-icon">▤</span> Archive
+      </a>
+      <a class="nav-item" data-screen="client" onclick="goTo('client', this)">
+        <span class="nav-icon">○</span> Client Shares
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      Karkhana · 8 of 25 GB used<br>
+      Renews 14 June
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="topbar">
+      <div class="row">
+        <span class="crumb" id="crumbText">Dashboard</span>
+      </div>
+      <div class="topbar-actions">
+        <input class="search" placeholder="Search projects, outlets, posts…">
+        <button class="btn btn-secondary btn-sm">Invite</button>
+        <button class="btn btn-sm" onclick="openModal('newProject')">+ New project</button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section id="screen-dashboard" class="screen active">
+      <div class="screen-header">
+        <div>
+          <h1 class="screen-title serif">Good evening, <span id="hello">Aanya</span>.</h1>
+          <div class="screen-sub">Wednesday, 13 May 2026 · 3 things need your attention this week.</div>
+        </div>
+        <div>
+          <button class="btn btn-secondary">View weekly digest</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Active projects</div>
+          <div class="kpi-value">12</div>
+          <div class="kpi-delta">+2 since last month</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Open submissions</div>
+          <div class="kpi-value">7</div>
+          <div class="kpi-delta neutral">3 awaiting decision</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">This week — posts</div>
+          <div class="kpi-value">4</div>
+          <div class="kpi-delta">2 scheduled · 2 draft</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Won / published YTD</div>
+          <div class="kpi-value">5</div>
+          <div class="kpi-delta">2 awards · 3 features</div>
+        </div>
+      </div>
+
+      <div class="panel-grid">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Recent activity</div>
+            <a class="panel-link">View all</a>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot success"></div>
+            <div class="activity-body">
+              <div class="activity-text"><strong>House of Many Verandahs</strong> was longlisted at <strong>WAF 2026 — House (Rural)</strong>.</div>
+              <div class="activity-time">2 hours ago · auto-imported from email</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div class="activity-body">
+              <div class="activity-text">Package adapter generated a <strong>700-word Dezeen submission</strong> for Library at Sangli.</div>
+              <div class="activity-time">Yesterday · review before sending</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot info"></div>
+            <div class="activity-body">
+              <div class="activity-text">2 Instagram captions drafted for <strong>Coastal Studio</strong> reveal photos.</div>
+              <div class="activity-time">Yesterday</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot warn"></div>
+            <div class="activity-body">
+              <div class="activity-text"><strong>AD India</strong> submission window opens in 9 days — you haven't shortlisted projects yet.</div>
+              <div class="activity-time">2 days ago · deadline radar</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div class="activity-body">
+              <div class="activity-text">Aarav uploaded 14 photos to <strong>Maker's Workshop</strong>.</div>
+              <div class="activity-time">3 days ago</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Upcoming deadlines</div>
+            <a class="panel-link">Outlet library</a>
+          </div>
+          <div class="deadline-row">
+            <div>
+              <div class="deadline-outlet">Dezeen Awards 2026</div>
+              <div class="deadline-detail">House (Rural) · ₹12,000 fee</div>
+            </div>
+            <div class="deadline-date urgent">6 days</div>
+          </div>
+          <div class="deadline-row">
+            <div>
+              <div class="deadline-outlet">AD India Pages</div>
+              <div class="deadline-detail">July issue · feature submission</div>
+            </div>
+            <div class="deadline-date soon">9 days</div>
+          </div>
+          <div class="deadline-row">
+            <div>
+              <div class="deadline-outlet">Stir World</div>
+              <div class="deadline-detail">Editorial pitch · rolling</div>
+            </div>
+            <div class="deadline-date">17 days</div>
+          </div>
+          <div class="deadline-row">
+            <div>
+              <div class="deadline-outlet">IIA Awards 2026</div>
+              <div class="deadline-detail">Residential category</div>
+            </div>
+            <div class="deadline-date">24 days</div>
+          </div>
+          <div class="deadline-row">
+            <div>
+              <div class="deadline-outlet">301 NEXT Talks</div>
+              <div class="deadline-detail">Speaker nominations · Bangalore</div>
+            </div>
+            <div class="deadline-date">28 days</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="screen-projects" class="screen">
+      <div class="screen-header">
+        <div>
+          <h1 class="screen-title serif">Projects</h1>
+          <div class="screen-sub">Every project lives here once. Outreach and social pull from this single record.</div>
+        </div>
+        <button class="btn" onclick="openModal('newProject')">+ New project</button>
+      </div>
+
+      <div class="project-toolbar">
+        <div class="chip active">All</div>
+        <div class="chip">Built</div>
+        <div class="chip">In progress</div>
+        <div class="chip">Concept</div>
+        <div class="chip">Residential</div>
+        <div class="chip">Adaptive reuse</div>
+        <div class="chip">Institutional</div>
+      </div>
+
+      <div class="project-grid">
+        <div class="project-card" onclick="goTo('project-detail')">
+          <div class="project-hero">
+            <div class="project-status">Built</div>
+          </div>
+          <div class="project-body">
+            <div class="project-title serif">House of Many Verandahs</div>
+            <div class="project-meta">Siolim, Goa · 2024 · 380 sqm</div>
+            <div class="project-tags">
+              <span class="tag">Residential</span>
+              <span class="tag">Laterite</span>
+              <span class="tag">Tropical</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-card" onclick="goTo('project-detail')">
+          <div class="project-hero p2"><div class="project-status">Built</div></div>
+          <div class="project-body">
+            <div class="project-title serif">Library at Sangli</div>
+            <div class="project-meta">Sangli, Maharashtra · 2023 · 220 sqm</div>
+            <div class="project-tags"><span class="tag">Institutional</span><span class="tag">Brick</span><span class="tag">Public</span></div>
+          </div>
+        </div>
+        <div class="project-card" onclick="goTo('project-detail')">
+          <div class="project-hero p3"><div class="project-status">Built</div></div>
+          <div class="project-body">
+            <div class="project-title serif">Maker's Workshop</div>
+            <div class="project-meta">Pune · 2024 · 140 sqm</div>
+            <div class="project-tags"><span class="tag">Adaptive reuse</span><span class="tag">Studio</span></div>
+          </div>
+        </div>
+        <div class="project-card" onclick="goTo('project-detail')">
+          <div class="project-hero p4"><div class="project-status">Built</div></div>
+          <div class="project-body">
+            <div class="project-title serif">Coastal Studio</div>
+            <div class="project-meta">Alibaug · 2023 · 95 sqm</div>
+            <div class="project-tags"><span class="tag">Residential</span><span class="tag">Concrete</span></div>
+          </div>
+        </div>
+        <div class="project-card" onclick="goTo('project-detail')">
+          <div class="project-hero p5"><div class="project-status" style="background:rgba(192,139,47,0.85)">In progress</div></div>
+          <div class="project-body">
+            <div class="project-title serif">Tilted Courtyard House</div>
+            <div class="project-meta">Bhuj, Gujarat · 2026 · 460 sqm</div>
+            <div class="project-tags"><span class="tag">Residential</span><span class="tag">Stone</span></div>
+          </div>
+        </div>
+        <div class="project-card" onclick="goTo('project-detail')">
+          <div class="project-hero p6"><div class="project-status" style="background:rgba(45,62,54,0.85)">Concept</div></div>
+          <div class="project-body">
+            <div class="project-title serif">School in the Grove</div>
+            <div class="project-meta">Nilgiris · TBC · 1,800 sqm</div>
+            <div class="project-tags"><span class="tag">Institutional</span><span class="tag">Timber</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECT DETAIL -->
+    <section id="screen-project-detail" class="screen">
+      <div class="row" style="margin-bottom: 14px;">
+        <button class="btn-ghost" onclick="goTo('projects')">← Back to projects</button>
+      </div>
+
+      <div class="detail-header">
+        <div class="detail-hero"></div>
+        <div class="detail-body">
+          <div>
+            <h1 class="detail-title serif">House of Many Verandahs</h1>
+            <div class="detail-sub">A laterite house in Siolim that turns the corridor inside out.</div>
+            <div class="meta-grid mt-16">
+              <div class="meta-item"><div class="meta-label">Location</div><div class="meta-value">Siolim, Goa</div></div>
+              <div class="meta-item"><div class="meta-label">Year</div><div class="meta-value">2024</div></div>
+              <div class="meta-item"><div class="meta-label">Area</div><div class="meta-value">380 sqm</div></div>
+              <div class="meta-item"><div class="meta-label">Client</div><div class="meta-value">Private</div></div>
+              <div class="meta-item"><div class="meta-label">Materials</div><div class="meta-value">Laterite, lime, Burma teak</div></div>
+              <div class="meta-item"><div class="meta-label">Photography</div><div class="meta-value">Niveditaa Gupta</div></div>
+            </div>
+            <div class="detail-actions">
+              <button class="btn btn-accent" onclick="openModal('package')">↗ Build outreach package</button>
+              <button class="btn btn-secondary">Share with client</button>
+              <button class="btn-ghost btn-secondary">Edit project</button>
+            </div>
+          </div>
+          <div>
+            <div style="background: var(--bg); border-radius: 8px; padding: 14px; font-size: 12px;">
+              <div style="font-weight: 600; margin-bottom: 8px;">Outreach so far</div>
+              <div class="row" style="justify-content: space-between; padding: 4px 0;">
+                <span>Dezeen</span><span style="color: var(--warning);">Under review</span>
+              </div>
+              <div class="row" style="justify-content: space-between; padding: 4px 0;">
+                <span>WAF 2026</span><span style="color: var(--success);">Longlisted</span>
+              </div>
+              <div class="row" style="justify-content: space-between; padding: 4px 0;">
+                <span>Stir World</span><span style="color: var(--text-3);">Drafting</span>
+              </div>
+              <div class="row" style="justify-content: space-between; padding: 4px 0;">
+                <span>IndianArch</span><span style="color: var(--success);">Published</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-tabs">
+        <div class="detail-tab active">Narrative</div>
+        <div class="detail-tab">Media (42)</div>
+        <div class="detail-tab">Drawings (8)</div>
+        <div class="detail-tab">Technical</div>
+        <div class="detail-tab">Outreach (4)</div>
+      </div>
+
+      <div class="ai-panel">
+        <div class="row" style="justify-content: space-between;">
+          <div class="row">
+            <span class="ai-tag">AI · brand voice</span>
+            <span style="font-size: 12px; color: var(--text-2); margin-left: 6px;">Trained on Karkhana's tone — 3 sentence transforms saved</span>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="regenerate()">↻ Regenerate variants</button>
+        </div>
+      </div>
+
+      <div class="narrative-card">
+        <div class="narrative-head">
+          <div class="narrative-length">Tagline · 12 words</div>
+          <button class="btn-ghost btn-sm">Copy</button>
+        </div>
+        <div class="narrative-text serif" id="text-tagline">A laterite house where every room remembers the verandah it once was.</div>
+      </div>
+
+      <div class="narrative-card">
+        <div class="narrative-head">
+          <div class="narrative-length">Short blurb · 50 words · for Instagram and listing pages</div>
+          <button class="btn-ghost btn-sm">Copy</button>
+        </div>
+        <div class="narrative-text" id="text-short">Set in Siolim's old quarter, this 380 sqm house is organised around four verandahs that absorb light, monsoon, and family routine. Laterite walls, lime plaster and Burma teak frames carry the climate; corridors widen into rooms and rooms thin back into corridors. A house built more in section than in plan.</div>
+      </div>
+
+      <div class="narrative-card">
+        <div class="narrative-head">
+          <div class="narrative-length">Mid feature · 150 words · for IndianArchitect&Builder, Stir World</div>
+          <button class="btn-ghost btn-sm">Copy</button>
+        </div>
+        <div class="narrative-text" id="text-mid">The brief was modest: a holiday house for a family of five returning to a long-held plot near the Chapora. The site, narrow and east-west, asked to be read as a sequence rather than a footprint. We organised the plan as four verandahs of varying width — sometimes three metres, sometimes one — strung together by a single laterite spine wall that turns each time the section steps.<br><br>The rooms occur where these verandahs widen. None of the rooms have doors to the corridor — they share it, the way old Goan tile-roofed houses share their pavilions. Lime plaster catches the high south light through teak grilles, and the deepest verandah becomes a workshop for the family's three potters. The result is closer to a covered street than to a house — which, locally, is what a house used to be.</div>
+      </div>
+
+      <div class="narrative-card">
+        <div class="narrative-head">
+          <div class="narrative-length">Long submission · 400 words · for Dezeen Awards 2026</div>
+          <button class="btn-ghost btn-sm">Copy</button>
+        </div>
+        <div class="narrative-text" id="text-long" style="color: var(--text-2);">Generated and locked into the Dezeen submission package — open the package to preview or edit. <a style="color: var(--accent); cursor: pointer;" onclick="openModal('package')">View package</a></div>
+      </div>
+    </section>
+
+    <!-- OUTREACH -->
+    <section id="screen-outreach" class="screen">
+      <div class="screen-header">
+        <div>
+          <h1 class="screen-title serif">Outreach</h1>
+          <div class="screen-sub">Every package, submission and outcome — across awards, publications, lectures and exhibitions.</div>
+        </div>
+        <div class="row">
+          <button class="btn btn-secondary">Calendar view</button>
+          <button class="btn">+ New submission</button>
+        </div>
+      </div>
+
+      <div class="project-toolbar">
+        <div class="chip active">All outlets</div>
+        <div class="chip">Awards</div>
+        <div class="chip">Publications</div>
+        <div class="chip">Lectures</div>
+        <div class="chip">All projects</div>
+        <div style="margin-left: auto;" class="text-3 mono" style="font-size: 11px;">Drag cards to update status →</div>
+      </div>
+
+      <div class="kanban">
+        <div class="kanban-col">
+          <div class="kanban-head"><div class="kanban-title">Planned</div><div class="kanban-count">3</div></div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">Dezeen Awards 2026</div>
+            <div class="kanban-project">Library at Sangli</div>
+            <div class="kanban-foot"><span class="kanban-date">Due 19 May</span><span class="kanban-badge award">Award</span></div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">AD India · July issue</div>
+            <div class="kanban-project">Coastal Studio</div>
+            <div class="kanban-foot"><span class="kanban-date">Due 22 May</span><span class="kanban-badge pub">Pub</span></div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">301 NEXT Bangalore</div>
+            <div class="kanban-project">Studio talk · principal</div>
+            <div class="kanban-foot"><span class="kanban-date">Due 10 Jun</span><span class="kanban-badge lect">Lect</span></div>
+          </div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-head"><div class="kanban-title">Drafting</div><div class="kanban-count">2</div></div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">Stir World</div>
+            <div class="kanban-project">House of Many Verandahs</div>
+            <div class="kanban-foot"><span class="kanban-date">No deadline</span><span class="kanban-badge pub">Pub</span></div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">IIA Awards 2026</div>
+            <div class="kanban-project">Maker's Workshop</div>
+            <div class="kanban-foot"><span class="kanban-date">Due 6 Jun</span><span class="kanban-badge award">Award</span></div>
+          </div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-head"><div class="kanban-title">Submitted</div><div class="kanban-count">3</div></div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">ArchDaily Building of the Year</div>
+            <div class="kanban-project">House of Many Verandahs</div>
+            <div class="kanban-foot"><span class="kanban-date">Sent 18 Apr</span><span class="kanban-badge award">Award</span></div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">Domus India</div>
+            <div class="kanban-project">Library at Sangli</div>
+            <div class="kanban-foot"><span class="kanban-date">Sent 02 May</span><span class="kanban-badge pub">Pub</span></div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">Architectural Review Emerging</div>
+            <div class="kanban-project">Maker's Workshop</div>
+            <div class="kanban-foot"><span class="kanban-date">Sent 28 Apr</span><span class="kanban-badge award">Award</span></div>
+          </div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-head"><div class="kanban-title">Under review</div><div class="kanban-count">2</div></div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">Dezeen Magazine</div>
+            <div class="kanban-project">House of Many Verandahs</div>
+            <div class="kanban-foot"><span class="kanban-date">Editor responded</span><span class="kanban-badge pub">Pub</span></div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">WAF 2026</div>
+            <div class="kanban-project">House of Many Verandahs</div>
+            <div class="kanban-foot"><span class="kanban-date">Longlist out 02 Jun</span><span class="kanban-badge award">Award</span></div>
+          </div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-head"><div class="kanban-title">Won / published</div><div class="kanban-count">3</div></div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">IndianArchitect&Builder</div>
+            <div class="kanban-project">House of Many Verandahs · 8 pages</div>
+            <div class="kanban-foot"><span class="kanban-date">Apr 2026</span><span class="kanban-badge pub">Pub</span></div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">ArchDaily Feature</div>
+            <div class="kanban-project">Library at Sangli</div>
+            <div class="kanban-foot"><span class="kanban-date">Mar 2026</span><span class="kanban-badge pub">Pub</span></div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">JK AYA · Young Architect</div>
+            <div class="kanban-project">Studio · principal</div>
+            <div class="kanban-foot"><span class="kanban-date">Feb 2026</span><span class="kanban-badge award">Award</span></div>
+          </div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-head"><div class="kanban-title">Rejected</div><div class="kanban-count">1</div></div>
+          <div class="kanban-card">
+            <div class="kanban-outlet">A+ Awards 2025</div>
+            <div class="kanban-project">Coastal Studio</div>
+            <div class="kanban-foot"><span class="kanban-date">Nov 2025</span><span class="kanban-badge award">Award</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOCIAL -->
+    <section id="screen-social" class="screen">
+      <div class="screen-header">
+        <div>
+          <h1 class="screen-title serif">Social Studio</h1>
+          <div class="screen-sub">Upload raw images, get on-brand captions and a fortnight of scheduled posts.</div>
+        </div>
+        <button class="btn">+ New post</button>
+      </div>
+
+      <div class="social-layout">
+        <div>
+          <div class="upload-zone">
+            <div class="upload-icon">↑</div>
+            <div class="upload-text">Drop project photos here</div>
+            <div class="upload-sub">JPG, PNG, MP4 · we'll tag, draft captions, and queue for review</div>
+          </div>
+
+          <div style="margin-bottom: 10px;" class="row">
+            <strong style="font-size: 13px;">This fortnight</strong>
+            <div class="chip active" style="margin-left: auto;">Drafts (2)</div>
+            <div class="chip">Scheduled (2)</div>
+            <div class="chip">Posted (8)</div>
+          </div>
+
+          <div class="post-card">
+            <div class="post-thumb t2"></div>
+            <div>
+              <div class="row" style="gap: 6px;">
+                <span class="channel-pill ig">Instagram</span>
+                <span class="ai-tag" style="background: var(--card); color: var(--text-2); border: 1px solid var(--border);">Draft 1 of 3</span>
+              </div>
+              <div class="post-caption">The reading room at Sangli is two storeys of brick and one storey of light. Built for ₹2,800 per sqm, opened in monsoon 2023. Photos by @niveditaaaa. — More on this in our story today.</div>
+              <div class="post-meta">For <strong>Library at Sangli</strong> · 14 hashtags suggested · Schedule for Friday 6:30 PM</div>
+            </div>
+          </div>
+
+          <div class="post-card">
+            <div class="post-thumb t3"></div>
+            <div>
+              <div class="row" style="gap: 6px;">
+                <span class="channel-pill li">LinkedIn</span>
+                <span class="ai-tag" style="background: var(--card); color: var(--text-2); border: 1px solid var(--border);">Draft 2 of 3</span>
+              </div>
+              <div class="post-caption">A note on Maker's Workshop, our smallest project of the year. 140 sqm of repurposed warehouse for three ceramicists in Pune. The roof was the only thing we kept — and then we wrapped a courtyard around it. Read about how we chose what to demolish, in this month's process journal →</div>
+              <div class="post-meta">For <strong>Maker's Workshop</strong> · No image · Schedule for Tuesday 9:00 AM</div>
+            </div>
+          </div>
+
+          <div class="post-card">
+            <div class="post-thumb"></div>
+            <div>
+              <div class="row" style="gap: 6px;">
+                <span class="channel-pill ig">Instagram</span>
+                <span class="ai-tag" style="background: rgba(74,103,65,0.12); color: var(--success);">Scheduled</span>
+              </div>
+              <div class="post-caption">Verandah no.2. The corner where the morning sun, the kitchen, and the dogs all meet. — From House of Many Verandahs, Siolim. 📷 @niveditaaaa</div>
+              <div class="post-meta">For <strong>House of Many Verandahs</strong> · Posts Tomorrow, 7:00 PM</div>
+            </div>
+          </div>
+
+          <div class="post-card">
+            <div class="post-thumb t4"></div>
+            <div>
+              <div class="row" style="gap: 6px;">
+                <span class="channel-pill ig">Instagram</span>
+                <span class="channel-pill li">LinkedIn</span>
+                <span class="ai-tag" style="background: rgba(74,103,65,0.12); color: var(--success);">Scheduled</span>
+              </div>
+              <div class="post-caption">Process post: how a sloped site became a four-section drawing. Coastal Studio, Alibaug. Swipe for the section iterations and the moment we cut a metre off the cantilever.</div>
+              <div class="post-meta">For <strong>Coastal Studio</strong> · Carousel · Friday, 11:00 AM</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="composer">
+            <div class="composer-head">
+              <div class="composer-title">Compose</div>
+              <span class="ai-tag">AI</span>
+            </div>
+            <textarea placeholder="Write or paste a caption — we'll match it to Karkhana's voice." id="composerText">The reading room at Sangli is two storeys of brick and one storey of light. Built for ₹2,800 per sqm, opened in monsoon 2023.</textarea>
+            <div class="composer-options">
+              <div class="opt-chip on">Instagram</div>
+              <div class="opt-chip">LinkedIn</div>
+              <div class="opt-chip">Twitter / X</div>
+              <div class="opt-chip">Threads</div>
+            </div>
+            <div class="composer-options">
+              <div class="opt-chip on">Process</div>
+              <div class="opt-chip">Poetic</div>
+              <div class="opt-chip">Technical</div>
+              <div class="opt-chip">Behind the scenes</div>
+            </div>
+            <div class="composer-foot">
+              <div class="schedule-time">Auto-schedule · Friday 6:30 PM</div>
+              <div class="row" style="gap: 6px;">
+                <button class="btn btn-secondary btn-sm" onclick="generateCaption()">↻ Variants</button>
+                <button class="btn btn-sm">Schedule</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel mt-16">
+            <div class="panel-head"><div class="panel-title">This week</div></div>
+            <div style="font-size: 13px; color: var(--text-2); line-height: 1.6;">
+              4 posts · 2 reels equivalent · ~3,400 expected impressions based on last 12 weeks.<br><br>
+              <strong>Suggested gap:</strong> no post on Sunday for the last 5 weeks. Want to queue a Sunday film still from <em>Maker's Workshop</em>?
+            </div>
+            <button class="btn btn-secondary btn-sm mt-8">Generate Sunday draft</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BRAND VAULT -->
+    <section id="screen-brand" class="screen">
+      <div class="screen-header">
+        <div>
+          <h1 class="screen-title serif">Brand Vault</h1>
+          <div class="screen-sub">Karkhana's voice, palette, type and templates — Atrium uses these for every generated piece.</div>
+        </div>
+        <button class="btn btn-secondary">Re-synthesise voice</button>
+      </div>
+
+      <div class="brand-grid">
+        <div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Studio profile</div></div>
+            <div class="meta-grid">
+              <div class="meta-item"><div class="meta-label">Founded</div><div class="meta-value">2019, Mumbai</div></div>
+              <div class="meta-item"><div class="meta-label">Team</div><div class="meta-value">4 architects</div></div>
+              <div class="meta-item"><div class="meta-label">Scale</div><div class="meta-value">2–5 person</div></div>
+              <div class="meta-item"><div class="meta-label">Projects/yr</div><div class="meta-value">~6 built</div></div>
+            </div>
+            <div class="meta-item mt-16"><div class="meta-label">Practice in one line</div><div class="meta-value" style="margin-top: 4px;">Small, slow buildings made of place — laterite, brick, lime, timber.</div></div>
+            <div class="meta-item mt-16"><div class="meta-label">Design philosophy</div><div class="meta-value text-2" style="margin-top: 4px; font-size: 13px;">We work in section before we work in plan. We pick materials before we draw walls. We don't believe in 'iconic'; we believe in repeat detail.</div></div>
+          </div>
+
+          <div class="panel mt-16">
+            <div class="panel-head"><div class="panel-title">Identity</div></div>
+            <div class="row" style="margin-bottom: 16px; gap: 24px;">
+              <div>
+                <div class="meta-label" style="margin-bottom: 6px;">Logo</div>
+                <div style="width: 80px; height: 80px; background: var(--text); color: var(--bg); display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 36px; border-radius: 8px;">k.</div>
+              </div>
+              <div>
+                <div class="meta-label" style="margin-bottom: 6px;">Type</div>
+                <div class="serif" style="font-size: 18px;">DM Serif Display</div>
+                <div style="font-size: 13px;">Inter · Regular & Medium</div>
+              </div>
+            </div>
+            <div class="meta-label" style="margin-bottom: 6px;">Palette</div>
+            <div class="palette-row">
+              <div>
+                <div class="swatch" style="background: #1c1a17;"></div>
+                <div class="palette-label">#1C1A17</div>
+              </div>
+              <div>
+                <div class="swatch" style="background: #b8542e;"></div>
+                <div class="palette-label">#B8542E</div>
+              </div>
+              <div>
+                <div class="swatch" style="background: #2d3e36;"></div>
+                <div class="palette-label">#2D3E36</div>
+              </div>
+              <div>
+                <div class="swatch" style="background: #c0a880;"></div>
+                <div class="palette-label">#C0A880</div>
+              </div>
+              <div>
+                <div class="swatch" style="background: #f5f2ec;"></div>
+                <div class="palette-label">#F5F2EC</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="voice-doc">
+          <div class="panel-head" style="margin-bottom: 4px;">
+            <div class="panel-title">Brand voice — synthesised by AI, edited by you</div>
+            <span class="ai-tag">v3 · 14 Apr</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-3); margin-bottom: 14px;">Trained on 6 published articles and your studio's about page.</div>
+
+          <div class="voice-attr">
+            <div class="voice-attr-name">Specific, not poetic</div>
+            <div class="voice-attr-desc">Karkhana writes with materials, dimensions and numbers in the sentence. Avoids "stunning", "seamless", "harmonious blend" — replaces them with the actual thing. A wall is not "elegant"; it is "375mm laterite, dry-stacked".</div>
+          </div>
+          <div class="voice-attr">
+            <div class="voice-attr-name">Section over plan</div>
+            <div class="voice-attr-desc">When describing a project, lead with the section idea — the vertical move, the layered space — and only then the plan. This applies to social, to award text, and to client conversations.</div>
+          </div>
+          <div class="voice-attr">
+            <div class="voice-attr-name">The studio behind the building</div>
+            <div class="voice-attr-desc">Always credit photographer, collaborators and craftspeople by name. Refers to ourselves as "we" not "the studio". Process is shown, not gestured at.</div>
+          </div>
+
+          <div class="voice-do-dont">
+            <div>
+              <div class="voice-list-head">Do</div>
+              <ul class="voice-list do">
+                <li>Lead with the section or the material</li>
+                <li>Use rupees, sqm, mm — not "spacious"</li>
+                <li>Name the photographer in every post</li>
+                <li>Indian English, no full stops in headlines</li>
+              </ul>
+            </div>
+            <div>
+              <div class="voice-list-head">Don't</div>
+              <ul class="voice-list dont">
+                <li>"Iconic", "stunning", "blend", "elevate"</li>
+                <li>Open with "Nestled in..."</li>
+                <li>Use AI-feeling phrases ("in conclusion", "dive into")</li>
+                <li>Write in third person about ourselves</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARCHIVE -->
+    <section id="screen-archive" class="screen">
+      <div class="screen-header">
+        <div>
+          <h1 class="screen-title serif">Archive</h1>
+          <div class="screen-sub">Permanent record of every publication, talk, exhibition and award. Searchable and exportable.</div>
+        </div>
+      </div>
+
+      <div class="project-toolbar">
+        <div class="chip active">All (28)</div>
+        <div class="chip">Publications (16)</div>
+        <div class="chip">Awards (5)</div>
+        <div class="chip">Lectures (4)</div>
+        <div class="chip">Exhibitions (3)</div>
+      </div>
+
+      <div class="panel">
+        <div class="deadline-row">
+          <div>
+            <div class="deadline-outlet">IndianArchitect&Builder — Vol. 38, Issue 4</div>
+            <div class="deadline-detail">House of Many Verandahs · 8-page feature · Print scans (12) + online link</div>
+          </div>
+          <div class="deadline-date">Apr 2026</div>
+        </div>
+        <div class="deadline-row">
+          <div>
+            <div class="deadline-outlet">ArchDaily Feature</div>
+            <div class="deadline-detail">Library at Sangli · ~38k page views · 21 comments</div>
+          </div>
+          <div class="deadline-date">Mar 2026</div>
+        </div>
+        <div class="deadline-row">
+          <div>
+            <div class="deadline-outlet">JK Cement AYA — Young Architect of the Year</div>
+            <div class="deadline-detail">Studio award · Trophy + cash prize · Coverage in 4 outlets</div>
+          </div>
+          <div class="deadline-date">Feb 2026</div>
+        </div>
+        <div class="deadline-row">
+          <div>
+            <div class="deadline-outlet">301 NEXT Talks · Mumbai</div>
+            <div class="deadline-detail">Lecture · 45 min + Q&A · Recording (YouTube)</div>
+          </div>
+          <div class="deadline-date">Jan 2026</div>
+        </div>
+        <div class="deadline-row">
+          <div>
+            <div class="deadline-outlet">Stir World — Material Stories series</div>
+            <div class="deadline-detail">Editorial · Laterite construction in coastal India</div>
+          </div>
+          <div class="deadline-date">Dec 2025</div>
+        </div>
+        <div class="deadline-row">
+          <div>
+            <div class="deadline-outlet">Mumbai Urban Design Week — Exhibition</div>
+            <div class="deadline-detail">2 projects shown · NGMA · 12 days</div>
+          </div>
+          <div class="deadline-date">Nov 2025</div>
+        </div>
+        <div class="deadline-row">
+          <div>
+            <div class="deadline-outlet">Domus India — Issue 097</div>
+            <div class="deadline-detail">Coastal Studio · 6-page feature · Print scans</div>
+          </div>
+          <div class="deadline-date">Oct 2025</div>
+        </div>
+        <div class="deadline-row">
+          <div>
+            <div class="deadline-outlet">CEPT University · Visiting Critic</div>
+            <div class="deadline-detail">Final reviews — Diploma studio · Spring 2025</div>
+          </div>
+          <div class="deadline-date">May 2025</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLIENT SHARE -->
+    <section id="screen-client" class="screen">
+      <div class="screen-header">
+        <div>
+          <h1 class="screen-title serif">Client Shares</h1>
+          <div class="screen-sub">Curated, view-only links you can send to a client to show every outreach effort on their project.</div>
+        </div>
+        <button class="btn">+ Create share</button>
+      </div>
+
+      <div class="panel">
+        <div class="deadline-row">
+          <div>
+            <div class="deadline-outlet">House of Many Verandahs — for the Verma family</div>
+            <div class="deadline-detail">4 outreach efforts shared · 3 social posts · 1 publication · Last viewed 2 days ago (3 times)</div>
+          </div>
+          <div class="row" style="gap: 8px;">
+            <button class="btn-ghost btn-sm">Copy link</button>
+            <button class="btn-secondary btn-sm">View as client</button>
+          </div>
+        </div>
+        <div class="deadline-row">
+          <div>
+            <div class="deadline-outlet">Library at Sangli — for the Trust</div>
+            <div class="deadline-detail">5 outreach efforts · 2 publications · Last viewed 9 days ago</div>
+          </div>
+          <div class="row" style="gap: 8px;">
+            <button class="btn-ghost btn-sm">Copy link</button>
+            <button class="btn-secondary btn-sm">View as client</button>
+          </div>
+        </div>
+        <div class="deadline-row">
+          <div>
+            <div class="deadline-outlet">Coastal Studio — for Ms. Mehra</div>
+            <div class="deadline-detail">3 outreach efforts · 1 publication · Never viewed (sent yesterday)</div>
+          </div>
+          <div class="row" style="gap: 8px;">
+            <button class="btn-ghost btn-sm">Copy link</button>
+            <button class="btn-secondary btn-sm">View as client</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel mt-24">
+        <div class="panel-head"><div class="panel-title">What the client sees</div></div>
+        <div style="background: var(--bg); padding: 24px; border-radius: 12px;">
+          <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid var(--border-strong); margin-bottom: 20px;">
+            <div class="serif" style="font-size: 28px;">House of Many Verandahs</div>
+            <div class="text-2 mt-8">A page Karkhana Architects has prepared for the Verma family.</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <div class="meta-label">Where we've sent your project</div>
+              <ul style="font-size: 13px; line-height: 2; list-style: none; margin-top: 6px;">
+                <li>✓ Featured in IndianArchitect&Builder · Apr 2026</li>
+                <li>○ Longlisted at WAF 2026 — decision 2 Jun</li>
+                <li>○ Under review at Dezeen Magazine</li>
+                <li>○ Drafting for Stir World</li>
+              </ul>
+            </div>
+            <div>
+              <div class="meta-label">Posted on social</div>
+              <ul style="font-size: 13px; line-height: 2; list-style: none; margin-top: 6px;">
+                <li>Instagram · 3 posts · 4.2k total impressions</li>
+                <li>LinkedIn · 1 process post · 1.1k views</li>
+                <li>Next post: tomorrow 7 PM (verandah no.2)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- New project modal -->
+<div class="modal-bg" id="modal-newProject">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">New project</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <div>
+          <div class="meta-label" style="margin-bottom: 4px;">Title</div>
+          <input class="search" style="width: 100%;" placeholder="e.g. Tilted Courtyard House">
+        </div>
+        <div>
+          <div class="meta-label" style="margin-bottom: 4px;">Status</div>
+          <select class="search" style="width: 100%;">
+            <option>Concept</option><option>In progress</option><option selected>Built</option>
+          </select>
+        </div>
+        <div>
+          <div class="meta-label" style="margin-bottom: 4px;">Location</div>
+          <input class="search" style="width: 100%;" placeholder="City, state">
+        </div>
+        <div>
+          <div class="meta-label" style="margin-bottom: 4px;">Year completed</div>
+          <input class="search" style="width: 100%;" placeholder="2024">
+        </div>
+        <div>
+          <div class="meta-label" style="margin-bottom: 4px;">Area (sqm)</div>
+          <input class="search" style="width: 100%;">
+        </div>
+        <div>
+          <div class="meta-label" style="margin-bottom: 4px;">Typology</div>
+          <input class="search" style="width: 100%;" placeholder="Residential, Institutional…">
+        </div>
+      </div>
+      <div style="margin-top: 16px;">
+        <div class="meta-label" style="margin-bottom: 4px;">Concept narrative (paste your existing draft — we'll rewrite it in Karkhana's voice)</div>
+        <textarea class="search" style="width: 100%; min-height: 100px;" placeholder="Anything you've already written about this project…"></textarea>
+      </div>
+      <div class="ai-panel mt-16" style="margin-bottom: 0;">
+        <div class="row">
+          <span class="ai-tag">AI</span>
+          <span style="font-size: 12px; color: var(--text-2);">Once you save, we'll auto-generate three lengths (50/150/400 words) using your brand voice. Edit before sending anywhere.</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn" onclick="closeModal()">Save project</button>
+    </div>
+  </div>
+</div>
+
+<!-- Package modal -->
+<div class="modal-bg" id="modal-package">
+  <div class="modal" style="max-width: 720px;">
+    <div class="modal-head">
+      <div class="modal-title">Build outreach package · House of Many Verandahs</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="meta-label" style="margin-bottom: 4px;">Outlet</div>
+      <select class="search" style="width: 100%; margin-bottom: 16px;">
+        <option selected>Dezeen Awards 2026 — House (Rural)</option>
+        <option>ArchDaily Submission</option>
+        <option>Stir World — Editorial pitch</option>
+        <option>WAF 2026 — House (Rural)</option>
+      </select>
+
+      <div class="ai-panel">
+        <div class="row" style="justify-content: space-between;">
+          <div class="row"><span class="ai-tag">AI</span><span style="font-size: 12px; color: var(--text-2);">Reading Dezeen's submission spec · pulling project data · matching voice…</span></div>
+          <span class="ai-loading"></span>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px; font-size: 13px; line-height: 1.6;">
+        <strong>Atrium will generate:</strong>
+        <ul style="margin-top: 6px; padding-left: 18px;">
+          <li>Project text trimmed to Dezeen's 700-word format</li>
+          <li>10 hero images resized to 2400×1600 sRGB JPEG (their spec)</li>
+          <li>2 drawings (plan + section) as 300dpi PDFs</li>
+          <li>Credits block in Dezeen's exact field order</li>
+          <li>A pre-filled cover letter to <em>amy.frearson@dezeen.com</em></li>
+        </ul>
+        <div class="text-2" style="margin-top: 12px; font-size: 12px;">Package will be saved to this project's Outreach tab and locked once sent. You'll have a chance to review and edit each piece.</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-accent" onclick="closeModal()">Generate package (~30 sec)</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Studio switcher
+  const studios = [
+    { name: 'Karkhana Architects', avatar: 'KA', plan: 'Studio plan', hello: 'Aanya' },
+    { name: 'North Edge Atelier', avatar: 'NE', plan: 'Solo plan', hello: 'Vikram' }
+  ];
+  let studioIdx = 0;
+  function toggleStudio() {
+    studioIdx = (studioIdx + 1) % studios.length;
+    const s = studios[studioIdx];
+    document.getElementById('studioName').textContent = s.name;
+    document.getElementById('studioAvatar').textContent = s.avatar;
+    document.getElementById('studioPlan').textContent = s.plan;
+    document.getElementById('hello').textContent = s.hello;
+  }
+
+  // Navigation
+  function goTo(screen, el) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + screen).classList.add('active');
+    if (el) {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      el.classList.add('active');
+    } else {
+      // sync sidebar if we jumped to a non-nav screen
+      const nav = document.querySelector(`.nav-item[data-screen="${screen}"]`);
+      if (nav) {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        nav.classList.add('active');
+      }
+    }
+    const crumbMap = {
+      'dashboard': 'Dashboard',
+      'projects': 'Projects',
+      'project-detail': 'Projects · House of Many Verandahs',
+      'outreach': 'Outreach',
+      'social': 'Social Studio',
+      'brand': 'Brand Vault',
+      'archive': 'Archive',
+      'client': 'Client Shares'
+    };
+    document.getElementById('crumbText').textContent = crumbMap[screen] || screen;
+    window.scrollTo(0, 0);
+  }
+
+  // Modals
+  function openModal(id) { document.getElementById('modal-' + id).classList.add('open'); }
+  function closeModal() { document.querySelectorAll('.modal-bg').forEach(m => m.classList.remove('open')); }
+  document.querySelectorAll('.modal-bg').forEach(m => m.addEventListener('click', e => { if (e.target === m) closeModal(); }));
+
+  // Simulated AI regenerate
+  function regenerate() {
+    const variants = {
+      tagline: [
+        'A laterite house where every room remembers the verandah it once was.',
+        'Four verandahs, one laterite spine, and a house that prefers section to plan.',
+        'A covered street, mistaken for a house — Karkhana in Siolim.'
+      ],
+      short: [
+        "Set in Siolim's old quarter, this 380 sqm house is organised around four verandahs that absorb light, monsoon, and family routine. Laterite walls, lime plaster and Burma teak frames carry the climate; corridors widen into rooms and rooms thin back into corridors. A house built more in section than in plan.",
+        "A house of four verandahs near the Chapora — laterite, lime, teak, monsoon. Each room shares a corridor instead of guarding one. The width of the house shifts every three metres. The deepest verandah is now a potters' workshop.",
+        "House of Many Verandahs is the smallest big house we've built — 380 sqm spread across four sectional ideas. Laterite spine wall, lime plaster, Burma teak grilles. No room has a door to the corridor; they share it, the way old Goan houses share their pavilions."
+      ]
+    };
+    const tEl = document.getElementById('text-tagline');
+    const sEl = document.getElementById('text-short');
+    tEl.style.opacity = '0.4'; sEl.style.opacity = '0.4';
+    setTimeout(() => {
+      const i = Math.floor(Math.random() * 3);
+      tEl.textContent = variants.tagline[i];
+      sEl.textContent = variants.short[i];
+      tEl.style.opacity = '1'; sEl.style.opacity = '1';
+    }, 700);
+  }
+
+  function generateCaption() {
+    const captions = [
+      'The reading room at Sangli is two storeys of brick and one storey of light. Built for ₹2,800 per sqm, opened in monsoon 2023. Photos by @niveditaaaa.',
+      'A brick library on a sloping site in Sangli. The roof becomes a reading deck, the deck becomes a stair. 220 sqm, 2023. — Open Monday through Saturday.',
+      'Built for ₹6.2 lakh: a public library in Sangli. Local brick, lime mortar, salvaged shutters. The whole building is the same idea drawn four times — once at every level.'
+    ];
+    const el = document.getElementById('composerText');
+    el.style.opacity = '0.4';
+    setTimeout(() => {
+      el.value = captions[Math.floor(Math.random() * 3)];
+      el.style.opacity = '1';
+    }, 600);
+  }
+
+  // Keyboard: esc closes modal
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+
+</body>
+</html>
